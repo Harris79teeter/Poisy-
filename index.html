@@ -4,8 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pöïsy - Welcome</title>
-  <link rel="stylesheet" href="style.css">
-
+  
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
@@ -64,30 +63,39 @@
       display: inline-block;
     }
 
-    /* Badge placeholder */
+    /* Badge with computers */
     .badge {
       width: 150px;
       height: 150px;
-      margin: 20px auto;
-      background-color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #1E90FF;
-      font-weight: bold;
-      font-size: 20px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      margin: 30px auto;
+    }
+    .badge svg {
+      width: 100%;
+      height: 100%;
     }
   </style>
 </head>
 <body>
 
+  <!-- Badge -->
   <div class="badge">
-    🌐 Pöïsy 🌐<br>
-    <small>World with Computers</small>
+    <svg viewBox="0 0 150 150">
+      <!-- Circle -->
+      <circle cx="75" cy="75" r="70" stroke="#FFD700" stroke-width="4" fill="#fff"/>
+      
+      <!-- Computer 1 -->
+      <rect x="30" y="50" width="30" height="20" fill="#1E90FF"/>
+      <text x="45" y="65" text-anchor="middle" fill="#fff" font-size="6">Pöïsy</text>
+      <rect x="30" y="70" width="30" height="5" fill="#555"/>
+      
+      <!-- Computer 2 -->
+      <rect x="90" y="50" width="30" height="20" fill="#1E90FF"/>
+      <text x="105" y="65" text-anchor="middle" fill="#fff" font-size="6">Pöïsy</text>
+      <rect x="90" y="70" width="30" height="5" fill="#555"/>
+    </svg>
   </div>
 
+  <!-- Sign Up Form -->
   <div class="container" id="signupForm">
     <h1>Create Account</h1>
     <input type="email" id="signupEmail" placeholder="Email" required><br>
@@ -96,6 +104,7 @@
     <span class="toggle-link" onclick="toggleForms()">Already have an account? Login</span>
   </div>
 
+  <!-- Login Form -->
   <div class="container" id="loginForm" style="display:none;">
     <h1>Login</h1>
     <input type="email" id="loginEmail" placeholder="Email" required><br>
