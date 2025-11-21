@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pöïsy - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <nav>
+        <h2>Pöïsy</h2>
+        <a href="#" onclick="logout()">Logout</a>
+    </nav>
+
+    <section id="transactions">
+        <h1>Send Money</h1>
+        <form id="transactionForm">
+            <input type="text" id="name" placeholder="Recipient Name" required><br>
+            <input type="number" id="amount" placeholder="Amount (GHS)" required><br>
+            <button type="submit" id="payButton">Pay Now</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>Customer support: <a href="mailto:poisymhan@gmail.com">poisymhan@gmail.com</a></p>
+    </footer>
+
+    <script>
+        // Firebase config (same as index.html)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Redirect if not logged in
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                window.location.href = "index.html";
+            }
+        });
+
+        // Logout function
+        function logout() {
+            auth.signOut().then(() => window.location.href = "index.html");
+        }
+
+        // Paystack payment
+        const payButton = document.getElementById('payButton');
+        payButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const amount = document.getElementById('amount').value * 100; // in kobo
+
+            var handler = PaystackPop.setup({
+                key: 'pk_test_xxxxxxxxxxxxxxxxxxxxx', // Replace with your Paystack test public key
+                email: 'example@example.com',
+                amount: amount,
+                currency: 'GHS',
+                ref: 'POSY_' + Math.floor(Math.random() * 1000000),
+                metadata: {
+                    custom_fields: [
+                        {display_name: "Name", variable_name: "name", value: name}
+                    ]
+                },
+                callback: function(response){
+                    alert('Payment complete! Reference: ' + response.reference);
+                    document.getElementById('transactionForm').reset();
+                },
+                onClose: function(){
+                    alert('Payment cancelled.');
+                }
+            });
+            handler.openIframe();
+        });
+    </script>
+</body>
+</html>
