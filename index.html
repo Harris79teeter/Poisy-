@@ -3,105 +3,162 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pöisy – Fast Money Transfers</title>
+  <title>Pöisy – Send Money Anywhere</title>
   <style>
+    :root { --blue: #00c4ff; --darkblue: #0066cc; --yellow: #ffd700; }
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #00c4ff, #0066cc);
-      color: white; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--blue), var(--darkblue));
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
-    .card {
-      background: white; color: #222; border-radius: 24px; width: 90%; max-width: 420px;
-      overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    .container { text-align: center; max-width: 420px; width: 100%; }
+
+    /* Screen 1 – Welcome + Terms */
+    #welcomeScreen .logo { font-size: 82px; font-weight: 900; letter-spacing: -4px; }
+    #welcomeScreen .tagline { font-size: 46px; font-weight: 800; line-height: 1.1; margin: 20px 0; }
+    #welcomeScreen .subtitle { font-size: 18px; opacity: 0.9; line-height: 1.6; margin-bottom: 40px; }
+
+    .terms-box {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(12px);
+      padding: 22px;
+      border-radius: 20px;
+      margin: 40px 0;
+      font-size: 14.5px;
     }
-    .header {
-      background: linear-gradient(135deg, #00c4ff, #0066cc);
+    .checkbox-label {
+      display: flex; align-items: flex-start; gap: 14px; cursor: pointer;
+    }
+    input[type="checkbox"] { width: 26px; height: 26px; accent-color: var(--yellow); flex-shrink: 0; }
+
+    .btn {
+      background: rgba(0,0,0,0.9); color: white; border: none; padding: 18px 50px;
+      border-radius: 50px; font-size: 18px; font-weight: 600; cursor: pointer;
+      opacity: 0; transform: translateY(20px); transition: all 0.5s;
+    }
+    .btn.visible { opacity: 1; transform: translateY(0); }
+
+    /* Screen 2 – Login / Sign Up */
+    .auth-card {
+      background: white; color: #222; border-radius: 24px; overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4); margin-top: 20px;
+    }
+    .auth-header {
+      background: linear-gradient(135deg, var(--blue), var(--darkblue));
       padding: 50px 30px; text-align: center; color: white;
     }
-    .logo { font-size: 60px; font-weight: 900; letter-spacing: -3px; }
-    .tagline { font-size: 28px; font-weight: 800; margin: 15px 0; }
-    .form {
-      padding: 40px 30px;
-    }
-    h2 { margin-bottom: 20px; font-size: 24px; }
+    .auth-header .logo { font-size: 60px; font-weight: 900; letter-spacing: -3px; }
+    .form { padding: 40px 30px; }
     input {
       width: 100%; padding: 18px; margin: 15px 0; border: 1px solid #ddd;
       border-radius: 14px; font-size: 17px;
     }
-    .btn {
+    .auth-btn {
       width: 100%; padding: 18px; background: #000; color: white;
-      border: none; border-radius: 14px; font-size: 18px; font-weight: 600; margin-top: 20px; cursor: pointer;
+      border: none; border-radius: 14px; font-size: 18px; font-weight: 600; cursor: pointer;
     }
-    .switch {
-      text-align: center; margin-top: 30px; font-size: 16px;
-    }
-    .switch a { color: #00c4ff; font-weight: 600; cursor: pointer; }
+    .switch { text-align: center; margin-top: 25px; }
+    .switch a { color: var(--blue); font-weight: 600; cursor: pointer; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="header">
-      <div class="logo">Pöisy</div>
-      <div class="tagline">Send Money<br>Anywhere</div>
+
+  <div class="container">
+
+    <!-- SCREEN 1: Welcome + Terms -->
+    <div id="welcomeScreen">
+      <h1 class="logo">Pöisy</h1>
+      <h2 class="tagline">Send Real<br>Cash<br>Anywhere</h2>
+      <p class="subtitle">Fast, low-fee transfers to 80+ countries.<br>Bank, cash pickup, or mobile wallet.</p>
+
+      <div class="terms-box">
+        <label class="checkbox-label">
+          <input type="checkbox" id="agreeTerms"/>
+          <span>I agree to Pöisy’s <strong>Terms of Service</strong>, <strong>Privacy Policy</strong>, and confirm I am 18+</span>
+        </label>
+      </div>
+
+      <button id="getStartedBtn" class="btn">Get Started</button>
     </div>
-    
-    <div class="form">
-      <h2 id="formTitle">Welcome Back</h2>
-      <input type="text" id="email" placeholder="Email or Phone Number" required />
-      <input type="password" id="password" placeholder="Password" required />
-      <button class="btn" id="authBtn">Log In</button>
-      
-      <div class="switch">
-        Don't have an account? <a id="switchLink">Sign Up</a>
+
+    <!-- SCREEN 2: Login / Sign Up -->
+    <div id="authScreen" style="display:none;">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="logo">Pöisy</div>
+        </div>
+        <div class="form">
+          <h2 id="authTitle">Welcome Back</h2>
+          <input type="text" id="email" placeholder="Email or Phone Number" required />
+          <input type="password" id="password" placeholder="Password" required />
+          <button id="authBtn" class="auth-btn">Log In</button>
+
+          <div class="switch">
+            Don't have an account? <a id="switchLink">Sign Up</a>
+          </div>
+        </div>
       </div>
     </div>
+
   </div>
 
   <script>
-    const formTitle = document.getElementById('formTitle');
+    const agree = document.getElementById('agreeTerms');
+    const getStarted = document.getElementById('getStartedBtn');
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const authScreen = document.getElementById('authScreen');
+    const authTitle = document.getElementById('authTitle');
     const authBtn = document.getElementById('authBtn');
     const switchLink = document.getElementById('switchLink');
 
-    // Toggle between Login and Sign Up
+    // Show Get Started button only when terms accepted
+    agree.addEventListener('change', () => {
+      getStarted.classList.toggle('visible', agree.checked);
+    });
+
+    // Go to Login/Signup screen
+    getStarted.addEventListener('click', () => {
+      welcomeScreen.style.display = 'none';
+      authScreen.style.display = 'block';
+    });
+
+    // Toggle between Login & Sign Up
     switchLink.addEventListener('click', () => {
       if (authBtn.textContent === 'Log In') {
-        formTitle.textContent = 'Create Account';
+        authTitle.textContent = 'Create Account';
         authBtn.textContent = 'Sign Up';
         switchLink.textContent = 'Log In instead';
       } else {
-        formTitle.textContent = 'Welcome Back';
+        authTitle.textContent = 'Welcome Back';
         authBtn.textContent = 'Log In';
         switchLink.textContent = 'Sign Up';
       }
     });
 
-    // On button click → Go to dashboard
+    // Final Login/Signup → Go to Dashboard
     authBtn.addEventListener('click', () => {
       const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+      const pass = document.getElementById('password').value;
 
-      if (!email || !password) {
+      if (!email || !pass) {
         alert('Please fill in all fields');
         return;
       }
 
-      // Fake success animation
       authBtn.textContent = 'Please wait...';
       authBtn.disabled = true;
 
       setTimeout(() => {
-        // Save login state (so user stays logged in)
         localStorage.setItem('poisy_logged_in', 'true');
         localStorage.setItem('poisy_user', email);
-
-        // Redirect to dashboard
         window.location.href = 'dashboard.html';
       }, 1200);
-    });
-
-    // Optional: Press Enter to submit
-    document.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') authBtn.click();
     });
   </script>
 </body>
