@@ -8,38 +8,33 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 
 <style>
-  body {margin:0; padding:20px; background:#f8f9fa; font-family:Arial; min-height:100vh;}
-  .header {text-align:center; margin-bottom:30px;}
-  .lion {width:100px; height:100px;}
-  .title {font-size:28px; font-weight:bold; color:#1E90FF;}
+  body {margin:0; padding:20px 15px; background:#f9f9f9; font-family:-apple-system,system-ui,Arial,sans-serif; min-height:100vh;}
+  .container {max-width:500px; margin:0 auto; background:white; border-radius:20px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.1);}
   
-  .form-box {background:white; border-radius:15px; padding:20px; box-shadow:0 5px 15px rgba(0,0,0,0.1); margin-bottom:20px;}
-  select, input {width:100%; padding:15px; margin:10px 0; border:1px solid #ddd; border-radius:10px; font-size:16px;}
+  select, input {width:100%; padding:18px; margin:12px 0; border:1px solid #eee; border-radius:12px; font-size:16px; box-sizing:border-box;}
+  label {font-weight:600; color:#333; margin-top:10px; display:block;}
   
-  .amount-row {display:flex; align-items:center; gap:15px; margin:20px 0;}
-  .amount-label {font-weight:bold; color:#333;}
-  .slider {flex:1; height:8px; border-radius:5px; background:#ddd; outline:none;}
-  .amount-values {font-size:14px; color:#666;}
+  .amount-row {display:flex; align-items:center; justify-content:space-between; margin:25px 0;}
+  .amount-label {font-size:18px; font-weight:bold;}
+  .slider {flex:1; margin:0 15px; height:8px; border-radius:5px; background:#ddd; outline:none;}
+  .slider::-webkit-slider-thumb {-webkit-appearance:none; width:28px; height:28px; background:#1E90FF; border-radius:50%;}
+
+  .btn {width:100%; padding:18px; background:#000; color:white; border:none; border-radius:12px; font-size:18px; font-weight:bold; margin:25px 0; cursor:pointer;}
   
-  .pay-btn {width:100%; padding:18px; background:#000; color:white; border:none; border-radius:12px; font-size:18px; font-weight:bold; margin:20px 0;}
-  
-  .methods {display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:30px;}
-  .method {background:white; border:2px solid #eee; border-radius:12px; padding:20px; text-align:center; cursor:pointer; transition:0.3s;}
-  .method.active {border-color:#1E90FF; background:#f0f8ff;}
-  .method img {width:40px; height:40px; margin-bottom:10px;}
-  
+  .methods {display:grid; grid-template-columns:1fr 1fr; gap:15px; margin:30px 0;}
+  .method {background:#fafafa; border:2px solid #f0f0f0; border-radius:15px; padding:20px; text-align:center; cursor:pointer; transition:0.3s;}
+  .method:active {transform:scale(0.98);}
+  .method img {width:38px; height:38px; margin-bottom:8px;}
+
   .hidden {display:none;}
-  .success {position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:999;}
-  .success svg {width:180px; height:180px; animation:bounce 2s infinite;}
-  @keyframes bounce {0%,100%{transform:translateY(0)} 50%{transform:translateY(-40px)}}
-  .success-text {font-size:40px; color:#FFD700; margin:20px; animation:pulse 2s infinite;}
-  @keyframes pulse {0%,100%{text-shadow:0 0 20px #FFD700} 50%{text-shadow:0 0 60px #FFF}}
+  .back {background:#666; margin-top:10px;}
+  .lion {width:90px; height:90px; margin:20px auto; display:block;}
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<div class="header">
+<div class="container">
+  <!-- Lion Logo -->
   <svg class="lion" viewBox="0 0 64 64">
     <circle cx="32" cy="32" r="12" fill="#FFD700"/>
     <circle cx="32" cy="32" r="25" fill="none" stroke="#FFB800" stroke-width="6"/>
@@ -47,120 +42,101 @@
     <circle cx="38" cy="29" r="4" fill="#000"/>
     <path d="M20,40 Q32,50 44,40" stroke="#000" stroke-width="4" fill="none"/>
   </svg>
-  <div class="title">Pöïsy</div>
-</div>
 
-<!-- Send Money Form -->
-<div class="form-box">
-  <label>Recipient Country</label>
-  <select id="country">
-    <option>USA</option>
-    <option>Nigeria</option>
-    <option>United Kingdom</option>
-    <option>Canada</option>
-  </select>
+  <!-- Send Money Form -->
+  <div id="mainForm">
+    <label>Recipient Country</label>
+    <select><option>USA</option><option>Nigeria</option><option>UK</option><option>Canada</option></select>
 
-  <label>Recipient Name</label>
-  <input type="text" placeholder="Full name" required>
+    <label>Recipient Name</label>
+    <input type="text" placeholder="Full name">
 
-  <label>Recipient Email/Phone</label>
-  <input type="text" placeholder="email@example.com or +234..." required>
+    <label>Recipient Email/Phone</label>
+    <input type="text" placeholder="email@example.com or +234...">
 
-  <div class="amount-row">
-    <div class="amount-label">Amount: $<span id="amountValue">50</span></div>
-    <input type="range" class="slider" min="5" max="200" value="50" oninput="document.getElementById('amountValue').innerText=this.value">
+    <div class="amount-row">
+      <div class="amount-label">Amount: $<span id="val">50</span></div>
+      <input type="range" class="slider" min="5" max="200" value="50" oninput="document.getElementById('val').innerText=this.value">
+    </div>
+    <div style="text-align:center; color:#888; font-size:14px;">$5 ————————————— $200</div>
+
+    <button class="btn" onclick="showMethods()">Get Quote</button>
   </div>
-  <div class="amount-values">$5 <span style="float:right;">$200</span></div>
 
-  <button class="pay-btn" onclick="showPaymentMethods()">Get Quote & Pay</button>
-</div>
-
-<!-- Payment Methods -->
-<div class="form-box hidden" id="paymentMethods">
-  <h3 style="text-align:center;">Choose Payment Method</h3>
-  <div class="methods">
-    <div class="method active" onclick="selectMethod(this,'card')">
-      <img src="https://cdn-icons-png.flaticon.com/512/633/633611.png" alt="Card">
-      <div>Bank Card<br><small>(Stripe)</small></div>
-    </div>
-    <div class="method" onclick="selectMethod(this,'mtn')">
-      <img src="https://cdn.worldvectorlogo.com/logos/mtn-1.svg" width="40" alt="MTN">
-      <div>MTN Mobile Money</div>
-    </div>
-    <div class="method" onclick="selectMethod(this,'palmpay')">
-      <img src="https://palmpay.co/assets/logo.png" width="40" alt="Palmpay">
-      <div>PalmPay</div>
-    </div>
-    <div class="method" onclick="selectMethod(this,'crypto')">
-      <img src="https://cdn-icons-png.flaticon.com/512/825/825474.png" alt="Crypto">
-      <div>Crypto</div>
+  <!-- Payment Methods -->
+  <div class="hidden" id="methods">
+    <h2 style="text-align:center; margin:20px 0; color:#333;">Choose Payment Method</h2>
+    <div class="methods">
+      <div class="method" onclick="openCardForm()">
+        <div style="font-size:40px;">Card</div>
+        <div>Bank Card<br><small>(Stripe)</small></div>
+      </div>
+      <div class="method">
+        <div style="font-size:40px;">Phone</div>
+        <div>MTN Mobile Money</div>
+      </div>
+      <div class="method">
+        <div style="font-size:40px;">Wallet</div>
+        <div>PalmPay</div>
+      </div>
+      <div class="method">
+        <div style="font-size:40px;">Crypto</div>
+        <div>Crypto</div>
+      </div>
     </div>
   </div>
-  <button class="pay-btn" onclick="proceedWithCard()">Continue with Card</button>
-</div>
 
-<!-- Card Details Form -->
-<div class="form-box hidden" id="cardForm">
-  <h3>Enter Card Details</h3>
-  <input type="text" id="cardNumber" placeholder="Bank Card Number" maxlength="19" oninput="formatCard(this)">
-  <input type="text" placeholder="Cardholder Name">
-  <div style="display:flex; gap:10px;">
-    <input type="text" placeholder="MM/YY" maxlength="5" style="width:50%">
-    <input type="text" placeholder="CVV" maxlength="4" style="width:50%">
+  <!-- Card Form -->
+  <div class="hidden" id="cardForm">
+    <h2 style="text-align:center; color:#333;">Enter Card Details</h2>
+    <input type="text" id="cardNum" placeholder="Bank Card Number" maxlength="19" oninput="formatCard(this)">
+    <input type="text" placeholder="Cardholder Name">
+    <div style="display:flex; gap:10px;">
+      <input type="text" placeholder="MM/YY" maxlength="5" style="width:50%">
+      <input type="text" placeholder="CVV" maxlength="4" style="width:50%">
+    </div>
+    <button class="btn" onclick="showPassword()">Send</button>
+    <button class="btn back" onclick="showMethods()">Back</button>
   </div>
-  <button class="pay-btn" onclick="goToPassword()">Send →</button>
-  <button onclick="backToMethods()" style="background:#666; margin-top:10px;">Back</button>
-</div>
 
-<!-- Password Confirm -->
-<div class="form-box hidden" id="passwordForm">
-  <h3>Confirm Transaction</h3>
-  <p>Enter your Pöïsy account password</p>
-  <input type="password" placeholder="Account Password">
-  <input type="password" placeholder="Confirm Password">
-  <button class="pay-btn" onclick="showSuccess()">Pay Now</button>
-  <button onclick="backToCard()" style="background:#666; margin-top:10px;">Back</button>
-</div>
-
-<!-- SUCCESS SCREEN -->
-<div class="success hidden" id="success">
-  <svg viewBox="0 0 64 64">
-    <circle cx="32" cy="32" r="12" fill="#FFD700"/>
-    <circle cx="32" cy="32" r="26" fill="none" stroke="#FFB800" stroke-width="6"/>
-    <circle cx="25" cy="28" r="4" fill="#000"/>
-    <circle cx="39" cy="28" r="4" fill="#000"/>
-    <path d="M18,42 Q32,52 46,42" stroke="#000" stroke-width="4" fill="none"/>
-  </svg>
-  <div class="success-text">Transaction Successful!</div>
-  <p>Your transfer has been sent</p>
-  <button class="pay-btn" style="width:80%; max-width:300px;" onclick="backToHome()">Done</button>
+  <!-- Password Confirm -->
+  <div class="hidden" id="passwordForm">
+    <h2 style="text-align:center; color:#333;">Confirm Transaction</h2>
+    <p style="text-align:center; color:#666;">Enter your Pöïsy account password</p>
+    <input type="password" placeholder="Account Password">
+    <input type="password" placeholder="Confirm Password">
+    <button class="btn" onclick="complete()">Pay Now</button>
+    <button class="btn back" onclick="openCardForm()">Back</button>
+  </div>
 </div>
 
 <script>
-  firebase.initializeApp({apiKey: "AIzaSyB6vgNBWwaa5ScUqGutsDAV7Eu4YKMqfjg", authDomain: "poisy-2dedf.firebaseapp.com", projectId: "poisy-2dedf"});
+  firebase.initializeApp({
+    apiKey: "AIzaSyB6vgNBWwaa5ScUqGutsDAV7Eu4YKMqfjg",
+    authDomain: "poisy-2dedf.firebaseapp.com",
+    projectId: "poisy-2dedf"
+  });
   const auth = firebase.auth();
   auth.onAuthStateChanged(user => { if (!user) location.href = "index.html"; });
 
-  function showPaymentMethods() { hideAll(); document.getElementById("paymentMethods").classList.remove("hidden"); }
-  function proceedWithCard() { hideAll(); document.getElementById("cardForm").classList.remove("hidden"); }
-  function goToPassword() { 
-    if (document.getElementById("cardNumber").value.replace(/\s/g,'').length < 16) {
-      alert("Enter valid card number"); return;
-    }
-    hideAll(); 
-    document.getElementById("passwordForm").classList.remove("hidden"); 
+  function showMethods() { hideAll(); document.getElementById("methods").classList.remove("hidden"); }
+  function openCardForm() { hideAll(); document.getElementById("cardForm").classList.remove("hidden"); }
+  function showPassword() {
+    const card = document.getElementById("cardNum").value.replace(/\s/g,'');
+    if (card.length < 16) return alert("Enter valid card number");
+    hideAll();
+    document.getElementById("passwordForm").classList.remove("hidden");
   }
-  function showSuccess() { hideAll(); document.getElementById("success").classList.remove("hidden"); }
-  function backToHome() { hideAll(); location.reload(); }
+  function complete() {
+    const p1 = document.querySelectorAll("#passwordForm input")[0].value;
+    const p2 = document.querySelectorAll("#passwordForm input")[1].value;
+    if (p1 !== p2 || p1.length < 6) return alert("Passwords don't match");
+    alert("Payment Successful!");
+    location.reload();
+  }
 
-  function backToMethods() { hideAll(); document.getElementById("paymentMethods").classList.remove("hidden"); }
-  function backToCard() { hideAll(); document.getElementById("cardForm").classList.remove("hidden"); }
-
-  function hideAll() { document.querySelectorAll(".form-box, .success").forEach(e => e.classList.add("hidden")); }
-
-  function selectMethod(el, type) {
-    document.querySelectorAll(".method").forEach(m => m.classList.remove("active"));
-    el.classList.add("active");
+  function hideAll() {
+    document.querySelectorAll("#mainForm, #methods, #cardForm, #passwordForm").forEach(el => el.classList.add("hidden"));
   }
 
   function formatCard(input) {
@@ -168,10 +144,7 @@
     let parts = v.match(/.{1,4}/g);
     input.value = parts ? parts.join(' ') : v;
   }
-
-  function logout() { auth.signOut().then(() => location.href = "index.html"); }
 </script>
 
-<button class="pay-btn" onclick="logout()" style="background:#FF4500; margin-top:30px;">Logout</button>
 </body>
   </html>
