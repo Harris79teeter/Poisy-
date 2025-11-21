@@ -1,107 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pöïsy - Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://js.paystack.co/v1/inline.js"></script>
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pöïsy - Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+  <!-- Paystack SDK -->
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ff0000; /* bright red background */
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    nav {
+      background-color: #28a745; /* bright green nav */
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav h2, nav a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    section {
+      padding: 50px 20px;
+    }
+
+    input, select {
+      padding: 10px;
+      width: 300px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+    }
+
+    button {
+      padding: 12px 25px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #1e7e34;
+    }
+
+    .payment-options {
+      margin-top: 30px;
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
+    }
+
+    footer {
+      margin-top: 50px;
+      padding: 20px;
+      background-color: #28a745;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-    <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 
-<script>
-  // Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyB6vgNBWwaa5ScUqGutsDAV7Eu4YKMqfjg",
-    authDomain: "poisy-2dedf.firebaseapp.com",
-    projectId: "poisy-2dedf",
-    storageBucket: "poisy-2dedf.appspot.com",
-    messagingSenderId: "310724767012",
-    appId: "1:310724767012:web:8a6f3e09510265b24917b1",
-    measurementId: "G-KDB8PXKGWJ"
-  };
+  <nav>
+    <h2>Pöïsy</h2>
+    <a href="#" onclick="logout()">Logout</a>
+  </nav>
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-</script>
-    <nav>
-        <h2>Pöïsy</h2>
-        <a href="#" onclick="logout()">Logout</a>
-    </nav>
+  <section id="userFormSection">
+    <h1>Send Money</h1>
+    <p>Enter your details and amount</p>
+    <input type="text" id="userName" placeholder="Your Full Name" required><br>
+    <input type="text" id="userPhone" placeholder="Phone Number" required><br>
+    <input type="number" id="userAmount" placeholder="Amount (GHS)" required><br>
+    <button onclick="submitUserInfo()">Continue</button>
+  </section>
 
-    <section id="transactions">
-        <h1>Send Money</h1>
-        <form id="transactionForm">
-            <input type="text" id="name" placeholder="Recipient Name" required><br>
-            <input type="number" id="amount" placeholder="Amount (GHS)" required><br>
-            <button type="submit" id="payButton">Pay Now</button>
-        </form>
-    </section>
+  <section id="paymentSection" class="payment-options">
+    <h2>Choose Payment Method</h2>
+    <button onclick="pay('card')">Pay with Card</button>
+    <button onclick="pay('mobilemoneyghana')">Pay with Mobile Money (Ghana)</button>
+    <button onclick="pay('ussd')">Pay with USSD</button>
+  </section>
 
-    <footer>
-        <p>Customer support: <a href="mailto:poisymhan@gmail.com">poisymhan@gmail.com</a></p>
-    </footer>
+  <footer>
+    <p>Customer support: <a href="mailto:poisymhan@gmail.com">poisymhan@gmail.com</a></p>
+  </footer>
 
-    <script>
-        // Firebase config (same as index.html)
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyB6vgNBWwaa5ScUqGutsDAV7Eu4YKMqfjg",
+      authDomain: "poisy-2dedf.firebaseapp.com",
+      projectId: "poisy-2dedf",
+      storageBucket: "poisy-2dedf.appspot.com",
+      messagingSenderId: "310724767012",
+      appId: "1:310724767012:web:8a6f3e09510265b24917b1",
+      measurementId: "G-KDB8PXKGWJ"
+    };
 
-        // Redirect if not logged in
-        auth.onAuthStateChanged(user => {
-            if (!user) {
-                window.location.href = "index.html";
-            }
-        });
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-        // Logout function
-        function logout() {
-            auth.signOut().then(() => window.location.href = "index.html");
+    // Redirect if not logged in
+    auth.onAuthStateChanged(user => {
+      if(!user){
+        alert("You must login first");
+        window.location.href = "index.html";
+      }
+    });
+
+    // Logout
+    function logout(){
+      auth.signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    }
+
+    // Show payment options after user info
+    function submitUserInfo(){
+      const name = document.getElementById('userName').value;
+      const phone = document.getElementById('userPhone').value;
+      const amount = document.getElementById('userAmount').value;
+
+      if(!name || !phone || !amount){
+        alert("Please fill in all fields");
+        return;
+      }
+
+      // Hide user info form
+      document.getElementById('userFormSection').style.display = 'none';
+
+      // Show payment options
+      document.getElementById('paymentSection').style.display = 'flex';
+    }
+
+    // Paystack payment
+    function pay(channel){
+      const name = document.getElementById('userName').value;
+      const phone = document.getElementById('userPhone').value;
+      const amount = parseFloat(document.getElementById('userAmount').value) * 100;
+
+      var handler = PaystackPop.setup({
+        key: 'pk_test_xxxxxxxxxxxxxxxxxxxxx', // replace with your test public key
+        email: auth.currentUser.email,
+        amount: amount,
+        currency: 'GHS',
+        channels: [channel],
+        ref: 'POSY_' + Math.floor(Math.random() * 1000000),
+        metadata: {
+          custom_fields: [
+            { display_name: "Name", variable_name: "name", value: name },
+            { display_name: "Phone", variable_name: "phone", value: phone }
+          ]
+        },
+        callback: function(response){
+          alert("Payment successful! Reference: " + response.reference);
+          window.location.reload(); // Reset the form
+        },
+        onClose: function(){
+          alert("Payment cancelled.");
         }
+      });
 
-        // Paystack payment
-        const payButton = document.getElementById('payButton');
-        payButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const amount = document.getElementById('amount').value * 100; // in kobo
+      handler.openIframe();
+    }
 
-            var handler = PaystackPop.setup({
-                key: 'pk_test_xxxxxxxxxxxxxxxxxxxxx', // Replace with your Paystack test public key
-                email: 'example@example.com',
-                amount: amount,
-                currency: 'GHS',
-                ref: 'POSY_' + Math.floor(Math.random() * 1000000),
-                metadata: {
-                    custom_fields: [
-                        {display_name: "Name", variable_name: "name", value: name}
-                    ]
-                },
-                callback: function(response){
-                    alert('Payment complete! Reference: ' + response.reference);
-                    document.getElementById('transactionForm').reset();
-                },
-                onClose: function(){
-                    alert('Payment cancelled.');
-                }
-            });
-            handler.openIframe();
-        });
-    </script>
+  </script>
 </body>
-</html>
+        </html>
