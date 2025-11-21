@@ -1,23 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- Full rebuilt index.html for Pöïsy (Login + Signup + Dashboard in ONE PAGE) --><!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pöïsy</title>
 <style>
-  body { margin:0; font-family: Arial, sans-serif; background-color: #1E90FF; }
-  .logo-container { text-align: center; margin-top:50px; }
-  .logo-svg { width:120px; height:auto; }
-  h1 { text-align:center; color: gold; font-size:36px; margin-top:20px; }
-  .auth-buttons { display:flex; justify-content:center; gap:20px; margin-top:40px; }
-  .auth-buttons button { padding:15px 30px; font-size:18px; font-weight:bold; border:none; border-radius:8px; cursor:pointer; background-color: gold; color:#000; }
-  .auth-buttons button:hover { background-color: #FFD700; }
-</style>
-</head>
-<body>
+  body { margin: 0; font-family: Arial, sans-serif; background-color: #1E90FF; }/* Hidden sections */ .hidden { display: none; }
 
-<div class="logo-container">
-  <!-- Luxury Banking Shield SVG Badge -->
+/* Logo */ .logo-container { text-align: center; margin-top: 40px; } .logo-svg { width: 120px; height: auto; }
+
+/* Headings */ h1 { text-align: center; color: gold; font-size: 36px; margin-top: 20px; } h2 { text-align: center; color: gold; }
+
+/* Auth buttons */ .auth-buttons { display: flex; justify-content: center; gap: 20px; margin-top: 40px; } .auth-buttons button { padding: 15px 30px; font-size: 18px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; background-color: gold; color: #000; }
+
+/* Forms */ .form-box { width: 90%; max-width: 350px; margin: auto; background: white; padding: 20px; border-radius: 10px; } input, select { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #aaa; } .submit-btn { width: 100%; background: gold; padding: 15px; border: none; border-radius: 8px; margin-top: 15px; font-size: 17px; font-weight: bold; }
+
+/* Dashboard */ #dashboard { background: linear-gradient(to bottom, red, green); min-height: 100vh; padding: 20px; } .card { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; } .back-btn { background: gold; padding: 10px 20px; border-radius: 8px; border: none; margin-bottom: 10px; font-weight: bold; }
+
+/* Profile menu */ #profileMenu { position: absolute; top: 60px; right: 20px; background: white; border-radius: 10px; padding: 10px; width: 150px; display: none; } #profileMenu div { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; } </style>
+
+</head>
+<body><!-- LOGO --><div class="logo-container" id="homeLogo">
   <svg class="logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -25,67 +27,72 @@
         <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
       </linearGradient>
     </defs>
-    <!-- Shield -->
     <path d="M100 10 L180 50 L160 180 L40 180 L20 50 Z" fill="#004d40" stroke="url(#goldGradient)" stroke-width="8" />
-    <!-- Gold Bar -->
     <rect x="60" y="80" width="80" height="40" rx="6" ry="6" fill="url(#goldGradient)" />
   </svg>
   <h1>Welcome to Pöïsy</h1>
-</div>
-
-<div class="auth-buttons">
-  <button id="loginBtn">Login</button>
-  <button id="signupBtn">Sign Up</button>
-</div>
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-
-<script>
-  // Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyB6vgNBWwaa5ScUqGutsDAV7Eu4YKMqfjg",
-    authDomain: "poisy-2dedf.firebaseapp.com",
-    projectId: "poisy-2dedf",
-    storageBucket: "poisy-2dedf.appspot.com",
-    messagingSenderId: "310724767012",
-    appId: "1:310724767012:web:8a6f3e09510265b24917b1",
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-
-  // LOGIN BUTTON
-  document.getElementById('loginBtn').addEventListener('click', () => {
-    const email = prompt("Enter your email:");
-    const password = prompt("Enter your password:");
-    if(!email || !password){ alert("Both fields are required"); return; }
-    auth.signInWithEmailAndPassword(email, password)
-      .then(userCredential => {
-        alert("Login successful!");
-        window.location.href = "dashboard.html"; // redirect to dashboard
-      })
-      .catch(error => {
-        alert("Error: " + error.message);
-      });
-  });
-
-  // SIGNUP BUTTON
-  document.getElementById('signupBtn').addEventListener('click', () => {
-    const email = prompt("Enter your email:");
-    const password = prompt("Enter your password:");
-    if(!email || !password){ alert("Both fields are required"); return; }
-    auth.createUserWithEmailAndPassword(email, password)
-      .then(userCredential => {
-        alert("Sign up successful!");
-        window.location.href = "dashboard.html"; // redirect to dashboard
-      })
-      .catch(error => {
-        alert("Error: " + error.message);
-      });
-  });
-</script>
-
-</body>
+</div><!-- AUTH BUTTONS --><div class="auth-buttons" id="authButtons">
+  <button onclick="showLogin()">Login</button>
+  <button onclick="showSignup()">Sign Up</button>
+</div><!-- LOGIN FORM --><div id="loginForm" class="form-box hidden">
+  <h2>Login</h2>
+  <input type="email" placeholder="Email" id="loginEmail">
+  <input type="password" placeholder="Password" id="loginPassword">
+  <button class="submit-btn" onclick="loginUser()">Login</button>
+</div><!-- SIGNUP FORM --><div id="signupForm" class="form-box hidden">
+  <h2>Create Account</h2>
+  <input type="text" placeholder="Full Name" id="signupName">
+  <input type="email" placeholder="Email" id="signupEmail">
+  <input type="password" placeholder="Password" id="signupPassword">
+  <button class="submit-btn" onclick="signupUser()">Sign Up</button>
+</div><!-- DASHBOARD --><div id="dashboard" class="hidden">
+  <button class="back-btn" onclick="logout()">Log Out</button>  <div style="text-align:right; margin-right:10px;">
+    <button onclick="toggleProfileMenu()" class="submit-btn" style="width:auto; padding:10px 15px;">Profile</button>
+  </div>  <!-- Profile Menu -->  <div id="profileMenu">
+    <div onclick="showSupport()">Support</div>
+    <div onclick="showSettings()">Settings</div>
+    <div onclick="showHistory()">History</div>
+  </div>  <!-- Step 1 Send Money -->  <div id="step1" class="card">
+    <h2>Send Money</h2>
+    <select id="recipientType">
+      <option>Mobile Money</option>
+      <option>Bank Account</option>
+    </select>
+    <input type="text" id="recipientName" placeholder="Recipient Name">
+    <input type="text" id="recipientAccount" placeholder="Account / Number">
+    <input type="number" id="amount" placeholder="Amount">
+    <button class="submit-btn" onclick="goStep2()">Next</button>
+  </div>  <!-- Step 2 Verification -->  <div id="step2" class="card hidden">
+    <button class="back-btn" onclick="backToStep1()">Back</button>
+    <h2>Verify Sending Account</h2>
+    <input type="text" id="senderAccount" placeholder="Your Account Number">
+    <input type="password" id="senderPassword" placeholder="Password">
+    <select id="paymentMethod">
+      <option>Mobile Money</option>
+      <option>Card</option>
+      <option>USSD</option>
+    </select>
+    <button class="submit-btn" onclick="completeTransaction()">Send</button>
+  </div>  <!-- Transaction History -->  <div id="historySection" class="card">
+    <h2>Transaction History</h2>
+    <div id="historyList"></div>
+  </div>
+</div><script>
+function showLogin(){ hideAll(); loginForm.classList.remove("hidden"); }
+function showSignup(){ hideAll(); signupForm.classList.remove("hidden"); }
+function hideAll(){ loginForm.classList.add("hidden"); signupForm.classList.add("hidden"); authButtons.classList.add("hidden"); homeLogo.classList.add("hidden"); }
+function loginUser(){ dashboard.classList.remove("hidden"); }
+function signupUser(){ dashboard.classList.remove("hidden"); }
+function logout(){ location.reload(); }
+function goStep2(){ step1.classList.add("hidden"); step2.classList.remove("hidden"); }
+function backToStep1(){ step2.classList.add("hidden"); step1.classList.remove("hidden"); }
+function toggleProfileMenu(){ profileMenu.style.display = profileMenu.style.display === "block" ? "none" : "block"; }
+function completeTransaction(){
+  let item = document.createElement("div");
+  item.innerHTML = "<p><b>Sent:</b> ¢"+amount.value+" to "+recipientName.value+"</p><hr>";
+  historyList.prepend(item);
+  alert("Transaction Complete!");
+  step2.classList.add("hidden"); step1.classList.remove("hidden");
+}
+</script></body>
   </html>
