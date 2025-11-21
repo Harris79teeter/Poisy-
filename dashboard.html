@@ -1,375 +1,177 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pöïsy Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pöïsy Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      color: #222;
+    }header {
+  background: linear-gradient(90deg, red, green);
+  padding: 15px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+header h2 {
+  margin: 0;
+  font-size: 20px;
+}
 
-<!-- Paystack SDK -->
-<script src="https://js.paystack.co/v1/inline.js"></script>
+.back-btn {
+  background: white;
+  color: black;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-<style>
-  body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #ff4d4d; 
-    color: #fff;
-    overflow-x: hidden;
-  }
+.container {
+  padding: 20px;
+}
 
-  /* NAVBAR */
-  nav {
-    background-color: #28a745;
-    padding: 15px 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  nav h2 {
-    margin: 0;
-    color: #fff;
-    font-size: 22px;
-    font-weight: bold;
-  }
+.section-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
 
-  /* PROFILE ICON */
-  .profile-btn {
-    cursor: pointer;
-    font-size: 22px;
-    padding: 8px 12px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 50%;
-  }
+.input-box {
+  margin-bottom: 15px;
+}
 
-  /* PROFILE DROPDOWN MENU */
-  .menu {
-    position: absolute;
-    top: 70px;
-    right: 20px;
-    width: 200px;
-    background: #1f1f1f;
-    border-radius: 10px;
-    display: none;
-    flex-direction: column;
-    padding: 10px;
-    animation: fadeIn 0.3s ease;
-  }
+.input-box label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
 
-  .menu a {
-    padding: 12px;
-    color: #fff;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .menu a:hover {
-    background: rgba(255,255,255,0.1);
-  }
+.input-box input, select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+}
 
-  @keyframes fadeIn {
-    from {opacity: 0; transform: translateY(-10px);}
-    to   {opacity: 1; transform: translateY(0);}
-  }
+.pay-btn {
+  width: 100%;
+  padding: 12px;
+  background: green;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 17px;
+  cursor: pointer;
+  margin-top: 10px;
+}
 
-  /* SECTION STYLES */
-  section {
-    position: absolute;
-    top: 120px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 400px;
-    background: rgba(0,0,0,0.2);
-    padding: 25px;
-    border-radius: 15px;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-  }
-  section.active {
-    display: flex;
-  }
+/* PROFILE DROPDOWN */
+.profile-area {
+  position: relative;
+  display: inline-block;
+}
 
-  .step-progress {
-    position: absolute;
-    top: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
-  }
-  .step-progress div {
-    width: 35px;
-    height: 8px;
-    background: rgba(255,255,255,0.4);
-    border-radius: 5px;
-  }
-  .step-progress div.active {
-    background: #28a745;
-  }
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #ddd;
+}
 
-  input {
-    width: 90%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: none;
-  }
+.dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  padding: 10px;
+  border-radius: 8px;
+  width: 180px;
+  display: none;
+}
 
-  button {
-    width: 95%;
-    padding: 12px;
-    margin: 10px 0;
-    background-color: #FFD700;
-    color: #000;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-  }
-  button:hover {
-    background-color: #FFC300;
-  }
+.dropdown a {
+  display: block;
+  padding: 8px;
+  text-decoration: none;
+  color: black;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
 
-  .back-btn {
-    align-self: flex-start;
-    cursor: pointer;
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: #fff;
-  }
+.dropdown a:last-child {
+  border-bottom: none;
+}
 
-  .transaction-entry {
-    background: rgba(0,0,0,0.2);
-    padding: 10px;
-    border-radius: 5px;
-    width: 100%;
-    text-align: left;
-    margin-bottom: 10px;
-  }
-</style>
+.history-section {
+  margin-top: 30px;
+  padding: 15px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+}
+
+.history-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+  </style>
 </head>
-<body>
-
-<!-- NAVBAR -->
-<nav>
-  <h2>Pöïsy</h2>
-  <div class="profile-btn" onclick="toggleMenu()">👤</div>
-</nav>
-
-<!-- PROFILE DROPDOWN -->
-<div id="profileMenu" class="menu">
-  <a href="#">👤 Profile</a>
-  <a href="#">⚙️ Settings</a>
-  <a href="mailto:poisymhan@gmail.com">📞 Customer Support</a>
-  <a href="#" onclick="showTransactionHistory()">💰 Transaction History</a>
-  <a href="#" onclick="logout()">🚪 Logout</a>
-</div>
-
-<div class="step-progress">
-  <div id="prog1" class="active"></div>
-  <div id="prog2"></div>
-  <div id="prog3"></div>
-  <div id="prog4"></div>
-  <div id="prog5"></div>
-  <div id="prog6"></div>
-</div>
-
-<!-- STEP 1 -->
-<section id="step1" class="active">
-  <h1>Send Money</h1>
-  <p>Select recipient type</p>
-  <button onclick="nextStep('momo')">Mobile Money</button>
-  <button onclick="nextStep('bank')">Bank Account</button>
-</section>
-
-<!-- STEP 2 -->
-<section id="step2">
-  <span class="back-btn" onclick="prevStep('step1')">&larr; Back</span>
-  <h2>Recipient Details</h2>
-  <input type="text" id="recipientName" placeholder="Recipient Name" required><br>
-
-  <div id="momoFields">
-    <input type="text" id="recipientPhone" placeholder="Phone Number"><br>
+<body><header>
+  <div class="back-btn">← Back</div>
+  <h2>Pöïsy Dashboard</h2>  <div class="profile-area">
+    <div class="profile-icon" onclick="toggleMenu()"></div>
+    <div class="dropdown" id="menu">
+      <a href="#">Customer Support</a>
+      <a href="#">Settings</a>
+      <a href="#history">Transaction History</a>
+      <a href="#">Logout</a>
+    </div>
   </div>
+</header><div class="container">  <div class="section-title">Send Money</div>  <div class="input-box">
+    <label>Choose Receiver Type</label>
+    <select>
+      <option>Mobile Money User</option>
+      <option>Bank User</option>
+    </select>
+  </div>  <div class="input-box">
+    <label>Receiver Account Number</label>
+    <input type="text" placeholder="Enter receiver number" />
+  </div>  <div class="input-box">
+    <label>Amount</label>
+    <input type="number" placeholder="Enter amount" />
+  </div>  <div class="input-box">
+    <label>Your Sending Account</label>
+    <input type="text" placeholder="Enter your account number" />
+  </div>  <div class="input-box">
+    <label>Your Account Password</label>
+    <input type="password" placeholder="Enter password" />
+  </div><button class="pay-btn">Continue to Payment</button>
 
-  <div id="bankFields">
-    <input type="text" id="bankName" placeholder="Bank Name"><br>
-    <input type="text" id="accountNumber" placeholder="Account Number"><br>
-  </div>
+  <!-- TRANSACTION HISTORY -->  <div id="history" class="history-section">
+    <h3>Transaction History</h3><div class="history-item">No transactions yet.</div>
 
-  <input type="number" id="amount" placeholder="Amount (GHS)" required>
-  <button onclick="nextStep2()">Continue</button>
-</section>
+<div class="back-btn" style="margin-top:15px; text-align:center; background:#ddd;">← Back</div>
 
-<!-- STEP 3 -->
-<section id="step3">
-  <span class="back-btn" onclick="prevStep('step2')">&larr; Back</span>
-  <h2>Choose Payment Method</h2>
-  <button onclick="nextStep3('card')">Card</button>
-  <button onclick="nextStep3('mobilemoneyghana')">Mobile Money</button>
-  <button onclick="nextStep3('ussd')">USSD</button>
-</section>
-
-<!-- STEP 4 -->
-<section id="step4">
-  <span class="back-btn" onclick="prevStep('step3')">&larr; Back</span>
-  <h2>Your Account Number</h2>
-  <input type="text" id="senderAccount" placeholder="Account Number" required>
-  <button onclick="nextStep4()">Continue</button>
-</section>
-
-<!-- STEP 5 -->
-<section id="step5">
-  <span class="back-btn" onclick="prevStep('step4')">&larr; Back</span>
-  <h2>Enter Password</h2>
-  <input type="password" id="senderPassword" placeholder="Password" required>
-  <button onclick="nextStep5()">Continue</button>
-</section>
-
-<!-- STEP 6 -->
-<section id="step6">
-  <span class="back-btn" onclick="prevStep('step5')">&larr; Back</span>
-  <h2>Confirm Password</h2>
-  <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-  <button onclick="processPayment()">Send Money</button>
-</section>
-
-<!-- TRANSACTION HISTORY -->
-<section id="transactionHistory">
-  <h2>Transaction History</h2>
-  <div id="historyList"></div>
-  <button class="back-btn" onclick="goBackToStart()">&larr; Back to Start</button>
-</section>
-
-<script>
-function toggleMenu() {
-  const menu = document.getElementById("profileMenu");
-  menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-}
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB6vgNBWwaa5ScUqGutsDAV7Eu4YKMqfjg",
-  authDomain: "poisy-2dedf.firebaseapp.com",
-  projectId: "poisy-2dedf",
-  storageBucket: "poisy-2dedf.appspot.com",
-  messagingSenderId: "310724767012",
-  appId: "1:310724767012:web:8a6f3e09510265b24917b1",
-};
-firebase.initializeApp(firebaseConfig);
-
-function logout() {
-  firebase.auth().signOut();
-  window.location.href = "index.html";
-}
-
-/* ---- STEP LOGIC (unchanged from previous version) ---- */
-let recipientType = '', paymentChannel = '';
-let steps = ['step1','step2','step3','step4','step5','step6'];
-let currentStep = 0;
-
-function updateProgress(){
-  steps.forEach((s,i)=>{
-    document.getElementById('prog'+(i+1)).classList.remove('active');
-  });
-  document.getElementById('prog'+(currentStep+1)).classList.add('active');
-}
-
-function showStep(stepId){
-  steps.forEach(s => document.getElementById(s).classList.remove('active'));
-  document.getElementById(stepId).classList.add('active');
-}
-
-function nextStep(type){
-  recipientType = type;
-  document.getElementById('momoFields').style.display = (type==='momo')?'block':'none';
-  document.getElementById('bankFields').style.display = (type==='bank')?'block':'none';
-  currentStep=1; showStep('step2'); updateProgress();
-}
-
-function nextStep2(){
-  if(
-    !document.getElementById('recipientName').value ||
-    !document.getElementById('amount').value
-  ){ alert("Fill all fields"); return; }
-  currentStep=2; showStep('step3'); updateProgress();
-}
-
-function nextStep3(channel){
-  paymentChannel = channel;
-  currentStep = 3;
-  showStep('step4');
-  updateProgress();
-}
-
-function nextStep4(){
-  if(!document.getElementById('senderAccount').value){ alert("Enter account"); return;}
-  currentStep=4; showStep('step5'); updateProgress();
-}
-
-function nextStep5(){
-  if(!document.getElementById('senderPassword').value){ alert("Enter password"); return;}
-  currentStep=5; showStep('step6'); updateProgress();
-}
-
-function prevStep(stepId){
-  currentStep = steps.indexOf(stepId);
-  showStep(stepId);
-  updateProgress();
-}
-
-function processPayment(){
-  if(document.getElementById('senderPassword').value !== document.getElementById('confirmPassword').value){
-    alert("Passwords do not match");
-    return;
+  </div></div><script>
+  function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
   }
-
-  alert("Payment would now be processed with Paystack.");
-
-  let tx = {
-    name: document.getElementById('recipientName').value,
-    amount: document.getElementById('amount').value,
-    ref: "TX_" + Math.floor(Math.random()*999999),
-  };
-
-  saveTransaction(tx);
-  showTransactionHistory();
-}
-
-function saveTransaction(tx){
-  let history = JSON.parse(localStorage.getItem('transactions')) || [];
-  history.unshift(tx);
-  localStorage.setItem('transactions', JSON.stringify(history));
-}
-
-function showTransactionHistory(){
-  let history = JSON.parse(localStorage.getItem('transactions')) || [];
-  let list = document.getElementById("historyList");
-  list.innerHTML = "";
-
-  history.forEach(tx => {
-    let div = document.createElement("div");
-    div.className = "transaction-entry";
-    div.innerHTML = `<strong>${tx.name}</strong><br>GHS ${tx.amount}<br>Ref: ${tx.ref}`;
-    list.appendChild(div);
-  });
-
-  steps.forEach(s => document.getElementById(s).classList.remove("active"));
-  document.getElementById("transactionHistory").style.display = "flex";
-}
-
-function goBackToStart(){
-  document.getElementById("transactionHistory").style.display = "none";
-  currentStep = 0;
-  showStep("step1");
-  updateProgress();
-}
-</script>
-
-</body>
+</script></body>
   </html>
