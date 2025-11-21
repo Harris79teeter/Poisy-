@@ -3,29 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pöïsy - Welcome</title>
+<title>Pöïsy Dashboard</title>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 
+<!-- Paystack SDK -->
+<script src="https://js.paystack.co/v1/inline.js"></script>
+
 <style>
   body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #1E90FF; /* Sea Blue */
+    background: #ff4d4d; /* Red background */
     color: #fff;
-    text-align: center;
+    overflow-x: hidden;
   }
 
-  .container {
-    max-width: 400px;
-    margin: 50px auto;
-    background: rgba(0,0,0,0.2);
-    padding: 30px;
-    border-radius: 15px;
+  nav {
+    background: #28a745; /* Bright green */
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
+  nav h2, nav a {
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  nav a:hover { text-decoration: underline; }
+
+  /* Step container */
+  section {
+    position: absolute;
+    top: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    background: rgba(0,0,0,0.2);
+    padding: 25px;
+    border-radius: 15px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.5s ease;
+  }
+  section.active { display: flex; }
+
+  /* Step progress */
+  .step-progress {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+  }
+  .step-progress div {
+    width: 40px;
+    height: 10px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 5px;
+  }
+  .step-progress div.active { background: #28a745; }
 
   input {
     width: 90%;
@@ -49,122 +93,213 @@
   }
   button:hover { background-color: #FFC300; }
 
-  .toggle-link {
-    color: #FFD700;
+  .back-btn {
+    align-self: flex-start;
     cursor: pointer;
-    display: inline-block;
-    margin-top: 10px;
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #fff;
   }
 
-  /* Animated Eagle Badge */
-  .badge-container { text-align: center; margin: 30px 0; }
-  .badge svg { width: 150px; height: 150px; }
-  .wing { transform-origin: center; animation: flap 1s infinite alternate; }
-  @keyframes flap {
-    0% { transform: rotate(0deg); }
-    50% { transform: rotate(10deg); }
-    100% { transform: rotate(0deg); }
+  .transaction-entry {
+    background: rgba(0,0,0,0.2);
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 10px;
   }
 
-  .welcome-text {
-    font-size: 28px;
-    margin-top: 15px;
-    font-family: 'Georgia', serif;
-    font-weight: bold;
-    color: #FFD700;
-    text-shadow: 2px 2px 4px #000;
-    animation: glow 2s infinite alternate;
-  }
-
-  @keyframes glow {
-    0% { text-shadow: 2px 2px 4px #000; color:#FFD700; }
-    100% { text-shadow: 2px 2px 20px #FFF; color:#FFFACD; }
+  footer {
+    margin-top: 300px;
+    padding: 20px;
+    background: #28a745;
+    color: #fff;
+    text-align: center;
   }
 </style>
 </head>
 <body>
 
-<!-- Animated Eagle Badge -->
-<div class="badge-container">
-  <svg viewBox="0 0 64 64">
-    <!-- Eagle body -->
-    <path d="M32 10 L36 30 L50 30 L38 40 L42 55 L32 45 L22 55 L26 40 L14 30 L28 30 Z" fill="url(#goldGrad)"/>
-    <!-- Left wing -->
-    <path class="wing" d="M22 55 L12 45 L10 50 Z" fill="#FFD700"/>
-    <!-- Right wing -->
-    <path class="wing" d="M42 55 L52 45 L54 50 Z" fill="#FFD700"/>
-    <!-- Gradient definition -->
-    <defs>
-      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#FFD700"/>
-        <stop offset="100%" stop-color="#FFA500"/>
-      </linearGradient>
-    </defs>
-  </svg>
-  <div class="welcome-text">Welcome to Pöïsy</div>
+<nav>
+  <h2>Pöïsy</h2>
+  <a href="#" onclick="logout()">Logout</a>
+</nav>
+
+<!-- Step progress indicator -->
+<div class="step-progress">
+  <div id="prog1" class="active"></div>
+  <div id="prog2"></div>
+  <div id="prog3"></div>
+  <div id="prog4"></div>
+  <div id="prog5"></div>
+  <div id="prog6"></div>
 </div>
 
-<!-- Sign Up Form -->
-<div class="container" id="signupForm">
-  <h1>Create Account</h1>
-  <input type="email" id="signupEmail" placeholder="Email" required><br>
-  <input type="password" id="signupPassword" placeholder="Password" required><br>
-  <button onclick="signUp()">Sign Up</button>
-  <span class="toggle-link" onclick="toggleForms()">Already have an account? Login</span>
-</div>
+<!-- Steps -->
+<section id="step1" class="active">
+  <h1>Send Money</h1>
+  <p>Select recipient type</p>
+  <button onclick="nextStep('momo')">Mobile Money</button>
+  <button onclick="nextStep('bank')">Bank Account</button>
+</section>
 
-<!-- Login Form -->
-<div class="container" id="loginForm" style="display:none;">
-  <h1>Login</h1>
-  <input type="email" id="loginEmail" placeholder="Email" required><br>
-  <input type="password" id="loginPassword" placeholder="Password" required><br>
-  <button onclick="login()">Login</button>
-  <span class="toggle-link" onclick="toggleForms()">Don't have an account? Sign Up</span>
-</div>
+<section id="step2">
+  <span class="back-btn" onclick="prevStep('step1')">&larr; Back</span>
+  <h2>Recipient Details</h2>
+  <input type="text" id="recipientName" placeholder="Recipient Name" required><br>
+  <div id="momoFields">
+    <input type="text" id="recipientPhone" placeholder="Phone Number" required><br>
+  </div>
+  <div id="bankFields">
+    <input type="text" id="bankName" placeholder="Bank Name"><br>
+    <input type="text" id="accountNumber" placeholder="Account Number"><br>
+  </div>
+  <input type="number" id="amount" placeholder="Amount (GHS)" required><br>
+  <button onclick="nextStep2()">Continue</button>
+</section>
+
+<section id="step3">
+  <span class="back-btn" onclick="prevStep('step2')">&larr; Back</span>
+  <h2>Choose Payment Method</h2>
+  <button onclick="nextStep3('card')">Pay with Card</button>
+  <button onclick="nextStep3('mobilemoneyghana')">Pay with Mobile Money (Ghana)</button>
+  <button onclick="nextStep3('ussd')">Pay with USSD</button>
+</section>
+
+<section id="step4">
+  <span class="back-btn" onclick="prevStep('step3')">&larr; Back</span>
+  <h2>Enter Sending Account Number</h2>
+  <input type="text" id="senderAccount" placeholder="Your Account Number" required><br>
+  <button onclick="nextStep4()">Continue</button>
+</section>
+
+<section id="step5">
+  <span class="back-btn" onclick="prevStep('step4')">&larr; Back</span>
+  <h2>Enter Sending Account Password</h2>
+  <input type="password" id="senderPassword" placeholder="Password" required><br>
+  <button onclick="nextStep5()">Continue</button>
+</section>
+
+<section id="step6">
+  <span class="back-btn" onclick="prevStep('step5')">&larr; Back</span>
+  <h2>Confirm Password</h2>
+  <input type="password" id="confirmPassword" placeholder="Confirm Password" required><br>
+  <button onclick="processPayment()">Send Money</button>
+</section>
+
+<section id="transactionHistory">
+  <h2>Transaction History</h2>
+  <div id="historyList"></div>
+</section>
+
+<footer>
+  <p>Customer support: <a href="mailto:poisymhan@gmail.com">poisymhan@gmail.com</a></p>
+</footer>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyB6vgNBWwaa5ScUqGutsDAV7Eu4YKMqfjg",
-    authDomain: "poisy-2dedf.firebaseapp.com",
-    projectId: "poisy-2dedf",
-    storageBucket: "poisy-2dedf.appspot.com",
-    messagingSenderId: "310724767012",
-    appId: "1:310724767012:web:8a6f3e09510265b24917b1",
-    measurementId: "G-KDB8PXKGWJ"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyB6vgNBWwaa5ScUqGutsDAV7Eu4YKMqfjg",
+  authDomain: "poisy-2dedf.firebaseapp.com",
+  projectId: "poisy-2dedf",
+  storageBucket: "poisy-2dedf.appspot.com",
+  messagingSenderId: "310724767012",
+  appId: "1:310724767012:web:8a6f3e09510265b24917b1",
+  measurementId: "G-KDB8PXKGWJ"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+auth.onAuthStateChanged(user => {
+  if(!user){ alert("Login first"); window.location.href = "index.html";}
+});
+function logout(){ auth.signOut().then(()=>window.location.href="index.html"); }
 
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
+let recipientType = '', paymentChannel = '';
+let steps = ['step1','step2','step3','step4','step5','step6'];
+let currentStep = 0;
 
-  function toggleForms(){
-    const signupForm = document.getElementById('signupForm');
-    const loginForm = document.getElementById('loginForm');
-    if(signupForm.style.display === 'none'){
-      signupForm.style.display = 'block';
-      loginForm.style.display = 'none';
-    } else {
-      signupForm.style.display = 'none';
-      loginForm.style.display = 'block';
-    }
-  }
+function updateProgress(){
+  steps.forEach((s,i)=>{
+    document.getElementById('prog'+(i+1)).classList.remove('active');
+  });
+  document.getElementById('prog'+(currentStep+1)).classList.add('active');
+}
 
-  function signUp(){
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-    if(!email || !password){ alert("Enter email and password"); return; }
-    auth.createUserWithEmailAndPassword(email, password)
-      .then(() => { alert("Account created! Redirecting to Dashboard..."); window.location.href="dashboard.html"; })
-      .catch(error => alert(error.message));
-  }
+function showStep(stepId){
+  steps.forEach(s => document.getElementById(s).classList.remove('active'));
+  document.getElementById(stepId).classList.add('active');
+}
 
-  function login(){
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    if(!email || !password){ alert("Enter email and password"); return; }
-    auth.signInWithEmailAndPassword(email, password)
-      .then(() => { alert("Login successful! Redirecting to Dashboard..."); window.location.href="dashboard.html"; })
-      .catch(error => alert(error.message));
-  }
+function nextStep(type){
+  recipientType = type;
+  document.getElementById('momoFields').style.display = (type==='momo')?'block':'none';
+  document.getElementById('bankFields').style.display = (type==='bank')?'block':'none';
+  currentStep=1; showStep('step2'); updateProgress();
+}
+
+function nextStep2(){
+  const name=document.getElementById('recipientName').value;
+  const phone=document.getElementById('recipientPhone').value;
+  const bank=document.getElementById('bankName').value;
+  const account=document.getElementById('accountNumber').value;
+  const amount=document.getElementById('amount').value;
+  if(!name||!amount||(recipientType==='momo'&&!phone)||(recipientType==='bank'&&(!bank||!account))){ alert("Fill all fields"); return;}
+  currentStep=2; showStep('step3'); updateProgress();
+}
+
+function nextStep3(channel){ paymentChannel=channel; currentStep=3; showStep('step4'); updateProgress(); }
+function nextStep4(){ if(!document.getElementById('senderAccount').value){ alert("Enter sending account"); return;} currentStep=4; showStep('step5'); updateProgress();}
+function nextStep5(){ if(!document.getElementById('senderPassword').value){ alert("Enter password"); return;} currentStep=5; showStep('step6'); updateProgress(); }
+
+function prevStep(stepId){
+  currentStep = steps.indexOf(stepId);
+  showStep(stepId);
+  updateProgress();
+}
+
+function processPayment(){
+  const password=document.getElementById('senderPassword').value;
+  const confirm=document.getElementById('confirmPassword').value;
+  if(password!==confirm){ alert("Passwords do not match"); return; }
+  alert("Payment would proceed to Paystack here!");
+  const tx={name:document.getElementById('recipientName').value,
+            phone:document.getElementById('recipientPhone').value||'',
+            bank:document.getElementById('bankName').value||'',
+            account:document.getElementById('accountNumber').value||'',
+            amount:document.getElementById('amount').value,
+            ref:"TX_"+Math.floor(Math.random()*1000000)};
+  saveTransaction(tx);
+  resetForm();
+}
+
+function saveTransaction(tx){
+  let history=JSON.parse(localStorage.getItem('transactions'))||[];
+  history.unshift(tx);
+  localStorage.setItem('transactions',JSON.stringify(history));
+  displayHistory();
+}
+
+function displayHistory(){
+  const historyList=document.getElementById('historyList');
+  let history=JSON.parse(localStorage.getItem('transactions'))||[];
+  historyList.innerHTML='';
+  history.forEach(tx=>{
+    const div=document.createElement('div');
+    div.className='transaction-entry';
+    div.innerHTML=`<strong>Recipient:</strong> ${tx.name} ${tx.phone||''} ${tx.bank||''} ${tx.account||''}<br>
+                   <strong>Amount:</strong> GHS ${tx.amount}<br>
+                   <strong>Reference:</strong> ${tx.ref}`;
+    historyList.appendChild(div);
+  });
+  if(history.length>0) document.getElementById('transactionHistory').style.display='block';
+}
+
+function resetForm(){
+  ['recipientName','recipientPhone','bankName','accountNumber','amount','senderAccount','senderPassword','confirmPassword'].forEach(id=>document.getElementById(id).value='');
+  currentStep=0; showStep('step1'); updateProgress();
+}
+
+window.onload=displayHistory;
 </script>
 </body>
   </html>
