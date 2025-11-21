@@ -17,13 +17,13 @@
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background: #ff4d4d;
+    background-color: #ff4d4d; /* Plain Red background */
     color: #fff;
     overflow-x: hidden;
   }
 
   nav {
-    background: #28a745;
+    background-color: #28a745; /* Bright Green */
     padding: 15px 30px;
     display: flex;
     justify-content: space-between;
@@ -36,19 +36,9 @@
   }
   nav a:hover { text-decoration: underline; }
 
-  .badge-container {
-    text-align: center;
-    margin: 20px 0;
-  }
-
-  /* Badge with 3 computers */
-  .badge svg { width: 150px; height: 150px; }
-  .welcome-text { font-size: 18px; margin-top: 10px; color: #FFD700; }
-
-  /* Step container */
   section {
     position: absolute;
-    top: 200px;
+    top: 120px;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
@@ -65,7 +55,7 @@
 
   .step-progress {
     position: absolute;
-    top: 120px;
+    top: 80px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -77,7 +67,7 @@
     background: rgba(255,255,255,0.4);
     border-radius: 5px;
   }
-  .step-progress div.active { background: #FFD700; }
+  .step-progress div.active { background: #28a745; }
 
   input {
     width: 90%;
@@ -86,11 +76,12 @@
     border-radius: 5px;
     border: none;
   }
+
   button {
     width: 95%;
     padding: 12px;
     margin: 10px 0;
-    background-color: #FFD700;
+    background-color: #FFD700; /* Gold buttons */
     color: #000;
     font-weight: bold;
     border: none;
@@ -109,7 +100,7 @@
   }
 
   .transaction-entry {
-    background: rgba(255,255,255,0.2);
+    background: rgba(0,0,0,0.2);
     padding: 10px;
     border-radius: 5px;
     width: 100%;
@@ -120,7 +111,7 @@
   footer {
     margin-top: 300px;
     padding: 20px;
-    background: #28a745;
+    background-color: #28a745; /* Green footer */
     color: #fff;
     text-align: center;
   }
@@ -133,27 +124,6 @@
   <a href="#" onclick="logout()">Logout</a>
 </nav>
 
-<!-- Badge -->
-<div class="badge-container">
-  <svg viewBox="0 0 150 150">
-    <circle cx="75" cy="75" r="70" stroke="#FFD700" stroke-width="4" fill="#fff"/>
-    <!-- Computer 1 -->
-    <rect x="25" y="50" width="25" height="20" fill="#1E90FF"/>
-    <text x="37" y="65" text-anchor="middle" fill="#fff" font-size="6">Pöïsy</text>
-    <rect x="25" y="70" width="25" height="5" fill="#555"/>
-    <!-- Computer 2 -->
-    <rect x="62" y="50" width="25" height="20" fill="#1E90FF"/>
-    <text x="75" y="65" text-anchor="middle" fill="#fff" font-size="6">Pöïsy</text>
-    <rect x="62" y="70" width="25" height="5" fill="#555"/>
-    <!-- Computer 3 -->
-    <rect x="99" y="50" width="25" height="20" fill="#1E90FF"/>
-    <text x="112" y="65" text-anchor="middle" fill="#fff" font-size="6">Pöïsy</text>
-    <rect x="99" y="70" width="25" height="5" fill="#555"/>
-  </svg>
-  <div class="welcome-text">Welcome to Pöïsy Website</div>
-</div>
-
-<!-- Step progress indicator -->
 <div class="step-progress">
   <div id="prog1" class="active"></div>
   <div id="prog2"></div>
@@ -163,7 +133,6 @@
   <div id="prog6"></div>
 </div>
 
-<!-- Steps -->
 <section id="step1" class="active">
   <h1>Send Money</h1>
   <p>Select recipient type</p>
@@ -196,14 +165,14 @@
 
 <section id="step4">
   <span class="back-btn" onclick="prevStep('step3')">&larr; Back</span>
-  <h2>Enter Your Sending Account Number</h2>
+  <h2>Enter Sending Account Number</h2>
   <input type="text" id="senderAccount" placeholder="Your Account Number" required><br>
   <button onclick="nextStep4()">Continue</button>
 </section>
 
 <section id="step5">
   <span class="back-btn" onclick="prevStep('step4')">&larr; Back</span>
-  <h2>Enter Your Account Password</h2>
+  <h2>Enter Sending Account Password</h2>
   <input type="password" id="senderPassword" placeholder="Password" required><br>
   <button onclick="nextStep5()">Continue</button>
 </section>
@@ -273,6 +242,7 @@ function nextStep2(){
   if(!name||!amount||(recipientType==='momo'&&!phone)||(recipientType==='bank'&&(!bank||!account))){ alert("Fill all fields"); return;}
   currentStep=2; showStep('step3'); updateProgress();
 }
+
 function nextStep3(channel){ paymentChannel=channel; currentStep=3; showStep('step4'); updateProgress(); }
 function nextStep4(){ if(!document.getElementById('senderAccount').value){ alert("Enter sending account"); return;} currentStep=4; showStep('step5'); updateProgress();}
 function nextStep5(){ if(!document.getElementById('senderPassword').value){ alert("Enter password"); return;} currentStep=5; showStep('step6'); updateProgress(); }
@@ -328,4 +298,4 @@ function resetForm(){
 window.onload=displayHistory;
 </script>
 </body>
-  </html>
+    </html>
