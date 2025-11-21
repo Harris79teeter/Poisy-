@@ -3,55 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pöïsy</title>
+    <title>Pöïsy - Welcome</title>
     <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 </head>
 <body>
-    <!-- Navigation -->
     <nav>
         <h2>Pöïsy</h2>
-        <a href="#home">Home</a> |
-        <a href="#about">About</a> |
-        <a href="#transactions">Transactions</a>
     </nav>
 
-    <!-- Home Section -->
-    <section id="home">
+    <section id="welcome">
         <h1>Welcome to Pöïsy!</h1>
-        <p>Click the button below to see it work:</p>
-        <button onclick="showMessage()">Click Me</button>
+        <p>Create an account or log in to start sending money.</p>
+
+        <h2>Sign Up</h2>
+        <input type="email" id="signupEmail" placeholder="Email">
+        <input type="password" id="signupPassword" placeholder="Password">
+        <button onclick="signUp()">Sign Up</button>
+
+        <h2>Login</h2>
+        <input type="email" id="loginEmail" placeholder="Email">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button onclick="login()">Login</button>
     </section>
 
-    <!-- About Section -->
-    <section id="about">
-        <h2>About Pöïsy</h2>
-        <p>Pöïsy is a simple website made with GitHub Pages. Soon, it can accept real transactions securely!</p>
-    </section>
+    <footer>
+        <p>Customer support: <a href="mailto:poisymhan@gmail.com">poisymhan@gmail.com</a></p>
+    </footer>
 
-    <!-- Transaction Section -->
-    <section id="transactions">
-        <h2>Send Money via Pöïsy</h2>
-        <form id="transactionForm">
-            <input type="text" id="name" placeholder="Your Name" required><br><br>
-            <input type="number" id="amount" placeholder="Amount (GHS)" required><br><br>
-            <button type="submit">Submit</button>
-        </form>
-    </section>
-
-    <!-- Script -->
     <script>
-        function showMessage() {
-            alert("Hello! You clicked the button.");
+        // Firebase config (replace with your own Firebase project config)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        function signUp() {
+            const email = document.getElementById("signupEmail").value;
+            const password = document.getElementById("signupPassword").value;
+
+            auth.createUserWithEmailAndPassword(email, password)
+            .then(() => {
+                alert("Sign up successful! Redirecting to dashboard...");
+                window.location.href = "dashboard.html";
+            })
+            .catch(error => alert(error.message));
         }
 
-        const form = document.getElementById('transactionForm');
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const amount = document.getElementById('amount').value;
-            alert(`Transaction simulated for ${name}, Amount: GHS ${amount}`);
-            form.reset();
-        });
+        function login() {
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+
+            auth.signInWithEmailAndPassword(email, password)
+            .then(() => {
+                alert("Login successful! Redirecting to dashboard...");
+                window.location.href = "dashboard.html";
+            })
+            .catch(error => alert(error.message));
+        }
     </script>
 </body>
 </html>
