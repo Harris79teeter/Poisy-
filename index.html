@@ -9,36 +9,100 @@
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1E90FF; /* Sea Blue */
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 50px auto;
+      background-color: rgba(0,0,0,0.2);
+      padding: 30px;
+      border-radius: 15px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+    }
+
+    button {
+      width: 95%;
+      padding: 12px;
+      margin: 10px 0;
+      background-color: #FFD700; /* Gold */
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #FFC300;
+    }
+
+    .toggle-link {
+      color: #FFD700;
+      cursor: pointer;
+      margin-top: 10px;
+      display: inline-block;
+    }
+
+    /* Badge placeholder */
+    .badge {
+      width: 150px;
+      height: 150px;
+      margin: 20px auto;
+      background-color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1E90FF;
+      font-weight: bold;
+      font-size: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav>
-    <h2>Pöïsy</h2>
-  </nav>
+  <div class="badge">
+    🌐 Pöïsy 🌐<br>
+    <small>World with Computers</small>
+  </div>
 
-  <!-- Welcome Section -->
-  <section id="welcome">
-    <h1>Welcome to Pöïsy!</h1>
-    <p>Create an account or log in to start sending money safely.</p>
-
-    <!-- Sign Up -->
-    <h2>Sign Up</h2>
+  <div class="container" id="signupForm">
+    <h1>Create Account</h1>
     <input type="email" id="signupEmail" placeholder="Email" required><br>
     <input type="password" id="signupPassword" placeholder="Password" required><br>
     <button onclick="signUp()">Sign Up</button>
+    <span class="toggle-link" onclick="toggleForms()">Already have an account? Login</span>
+  </div>
 
-    <!-- Login -->
-    <h2>Login</h2>
+  <div class="container" id="loginForm" style="display:none;">
+    <h1>Login</h1>
     <input type="email" id="loginEmail" placeholder="Email" required><br>
     <input type="password" id="loginPassword" placeholder="Password" required><br>
     <button onclick="login()">Login</button>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <p>Customer support: <a href="mailto:poisymhan@gmail.com">poisymhan@gmail.com</a></p>
-  </footer>
+    <span class="toggle-link" onclick="toggleForms()">Don't have an account? Sign Up</span>
+  </div>
 
   <script>
     // Firebase config
@@ -52,41 +116,49 @@
       measurementId: "G-KDB8PXKGWJ"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // Sign Up Function
-    function signUp() {
-      const email = document.getElementById("signupEmail").value;
-      const password = document.getElementById("signupPassword").value;
+    // Toggle forms
+    function toggleForms(){
+      const signupForm = document.getElementById('signupForm');
+      const loginForm = document.getElementById('loginForm');
+      if(signupForm.style.display === 'none'){
+        signupForm.style.display = 'block';
+        loginForm.style.display = 'none';
+      } else {
+        signupForm.style.display = 'none';
+        loginForm.style.display = 'block';
+      }
+    }
 
+    // Sign Up
+    function signUp(){
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
       if(!email || !password){
         alert("Please enter email and password");
         return;
       }
-
       auth.createUserWithEmailAndPassword(email, password)
         .then(() => {
-          alert("Sign up successful! Redirecting to dashboard...");
+          alert("Account created! Redirecting to Dashboard...");
           window.location.href = "dashboard.html";
         })
         .catch(error => alert(error.message));
     }
 
-    // Login Function
-    function login() {
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-
+    // Login
+    function login(){
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
       if(!email || !password){
         alert("Please enter email and password");
         return;
       }
-
       auth.signInWithEmailAndPassword(email, password)
         .then(() => {
-          alert("Login successful! Redirecting to dashboard...");
+          alert("Login successful! Redirecting to Dashboard...");
           window.location.href = "dashboard.html";
         })
         .catch(error => alert(error.message));
