@@ -27,8 +27,6 @@
     border-radius: 15px;
   }
 
-  h1 { margin-bottom: 20px; }
-
   input {
     width: 90%;
     padding: 10px;
@@ -58,26 +56,50 @@
     margin-top: 10px;
   }
 
-  /* Eagle Badge */
+  /* Animated Eagle Badge */
   .badge-container { text-align: center; margin: 30px 0; }
-  .badge svg { width: 120px; height: 120px; }
+  .badge svg { width: 150px; height: 150px; }
+  .wing { transform-origin: center; animation: flap 1s infinite alternate; }
+  @keyframes flap {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(10deg); }
+    100% { transform: rotate(0deg); }
+  }
+
   .welcome-text {
-    font-size: 24px;
+    font-size: 28px;
     margin-top: 15px;
     font-family: 'Georgia', serif;
     font-weight: bold;
     color: #FFD700;
     text-shadow: 2px 2px 4px #000;
+    animation: glow 2s infinite alternate;
+  }
+
+  @keyframes glow {
+    0% { text-shadow: 2px 2px 4px #000; color:#FFD700; }
+    100% { text-shadow: 2px 2px 20px #FFF; color:#FFFACD; }
   }
 </style>
 </head>
 <body>
 
-<!-- Eagle Badge -->
+<!-- Animated Eagle Badge -->
 <div class="badge-container">
   <svg viewBox="0 0 64 64">
-    <!-- Simple stylized eagle icon -->
-    <path d="M32 4 L36 20 L48 20 L38 28 L42 44 L32 34 L22 44 L26 28 L16 20 L28 20 Z" fill="#FFD700"/>
+    <!-- Eagle body -->
+    <path d="M32 10 L36 30 L50 30 L38 40 L42 55 L32 45 L22 55 L26 40 L14 30 L28 30 Z" fill="url(#goldGrad)"/>
+    <!-- Left wing -->
+    <path class="wing" d="M22 55 L12 45 L10 50 Z" fill="#FFD700"/>
+    <!-- Right wing -->
+    <path class="wing" d="M42 55 L52 45 L54 50 Z" fill="#FFD700"/>
+    <!-- Gradient definition -->
+    <defs>
+      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFD700"/>
+        <stop offset="100%" stop-color="#FFA500"/>
+      </linearGradient>
+    </defs>
   </svg>
   <div class="welcome-text">Welcome to Pöïsy</div>
 </div>
