@@ -8,274 +8,118 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 
 <style>
-  body {
-    font-family: 'Georgia', serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, #1E90FF, #0870D1);
-    color: #fff;
-    min-height: 100vh;
-    text-align: center;
-  }
-
-  .header {
-    padding: 20px;
-    background: rgba(0,0,0,0.3);
-  }
-
-  .lion-badge {
-    width: 120px;
-    height: 120px;
-    margin: 20px auto;
-  }
-
-  .welcome {
-    font-size: 28px;
-    color: #FFD700;
-    text-shadow: 2px 2px 10px #000;
-    animation: glow 3s infinite alternate;
-  }
-
-  @keyframes glow {
-    0% { text-shadow: 2px 2px 10px #000; }
-    100% { text-shadow: 0 0 25px #FFF, 0 0 40px #FFD700; }
-  }
-
-  .card {
-    max-width: 420px;
-    margin: 20px auto;
-    background: rgba(255,255,255,0.15);
-    padding: 25px;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-  }
-
-  button {
-    width: 100%;
-    padding: 16px;
-    margin: 15px 0;
-    background: #FFD700;
-    color: #000;
-    font-weight: bold;
-    font-size: 18px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  button:hover { background: #FFC300; transform: translateY(-3px); }
-
-  input {
-    width: 90%;
-    padding: 14px;
-    margin: 12px 0;
-    border-radius: 10px;
-    border: none;
-    font-size: 16px;
-    text-align: center;
-  }
-
-  .hidden { display: none; }
-
-  .success-screen {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.95);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-  }
-
-  .success-lion {
-    width: 200px;
-    height: 200px;
-    animation: bounce 2s infinite;
-  }
-
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-30px); }
-  }
-
-  .success-text {
-    font-size: 36px;
-    color: #FFD700;
-    margin: 20px 0;
-    animation: pulseGlow 2s infinite;
-  }
-
-  @keyframes pulseGlow {
-    0% { text-shadow: 0 0 20px #FFD700; }
-    50% { text-shadow: 0 0 40px #FFF, 0 0 60px #FFD700; }
-    100% { text-shadow: 0 0 20px #FFD700; }
-  }
-
-  .logout {
-    background: #FF4500;
-    color: white;
-    margin-top: 30px;
-  }
+  body {font-family:Georgia; margin:0; background:linear-gradient(135deg,#1E90FF,#0870D1); color:#fff; text-align:center; min-height:100vh;}
+  .lion {width:120px; height:120px; margin:20px auto;}
+  .welcome {font-size:28px; color:#FFD700; text-shadow:2px 2px 10px #000; animation:glow 3s infinite alternate;}
+  @keyframes glow {0%{text-shadow:2px 2px 10px #000;} 100%{text-shadow:0 0 30px #FFD700;}}
+  .card {max-width:420px; margin:20px auto; background:rgba(255,255,255,0.15); padding:25px; border-radius:20px; backdrop-filter:blur(10px);}
+  input {width:90%; padding:14px; margin:12px 0; border-radius:10px; border:none; text-align:center; font-size:16px;}
+  button {width:100%; padding:16px; margin:15px 0; background:#FFD700; color:#000; font-weight:bold; border:none; border-radius:12px; cursor:pointer; font-size:18px;}
+  button:hover {background:#FFC300; transform:translateY(-3px);}
+  .hidden {display:none;}
+  .success {position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.98); display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:999;}
+  .success svg {width:200px; height:200px; animation:bounce 2s infinite;}
+  @keyframes bounce {0%,100%{transform:translateY(0);} 50%{transform:translateY(-30px);}}
+  .success-text {font-size:40px; color:#FFD700; animation:pulse 2s infinite;}
+  @keyframes pulse {0%,100%{text-shadow:0 0 20px #FFD700;} 50%{text-shadow:0 0 60px #FFF;}}
+  .logout {background:#FF4500; color:white; max-width:400px; margin:30px auto; display:block;}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <svg class="lion-badge" viewBox="0 0 64 64">
-    <circle cx="32" cy="32" r="12" fill="#FFD700" stroke="#FFA500" stroke-width="2"/>
-    <circle class="mane" cx="32" cy="32" r="20" fill="none" stroke="#FFB800" stroke-width="4"/>
-    <circle class="mane" cx="32" cy="32" r="25" fill="none" stroke="#FFA500" stroke-width="3"/>
-    <circle cx="27" cy="30" r="3" fill="#000"/>
-    <circle cx="37" cy="30" r="3" fill="#000"/>
-    <polygon points="30,36 34,36 32,41" fill="#000"/>
-    <path d="M26,43 Q32,48 38,43" stroke="#000" stroke-width="2" fill="none"/>
-  </svg>
-  <div class="welcome">Pöïsy Dashboard</div>
-  <p>Welcome back, King of the Jungle!</p>
-</div>
+<svg class="lion" viewBox="0 0 64 64">
+  <circle cx="32" cy="32" r="12" fill="#FFD700"/>
+  <circle cx="32" cy="32" r="24" fill="none" stroke="#FFB800" stroke-width="5"/>
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#FFA500" stroke-width="4"/>
+  <circle cx="26" cy="29" r="4" fill="#000"/>
+  <circle cx="38" cy="29" r="4" fill="#000"/>
+  <path d="M20,38 Q32,48 44,38" stroke="#000" stroke-width="3" fill="none"/>
+</svg>
+<div class="welcome">Pöïsy Dashboard</div>
+<p>Welcome back, Lion!</p>
 
-<div class="card">
+<div class="card" id="mainMenu">
   <h2>Add Funds</h2>
-  <p>Select payment method</p>
-  <button onclick="openCardForm()">Bank Card / Debit Card</button>
-  <!-- You can add more methods later -->
+  <button onclick="openCard()">Bank Card / Debit Card</button>
 </div>
 
-<!-- Card Details Form -->
+<!-- Card Form -->
 <div class="card hidden" id="cardForm">
-  <h2>Card Payment</h2>
-  <input type="text" id="cardNumber" placeholder="Card Number (e.g. 4242 4242 4242 4242)" maxlength="19" oninput="formatCardNumber(this)">
+  <h2>Enter Card Details</h2>
+  <input type="text" id="cardNumber" placeholder="Card Number" maxlength="19" oninput="formatCard(this)">
   <input type="text" placeholder="Cardholder Name" id="cardName">
-  <div style="display:flex; justify-content:space-between; width:95%;">
-    <input type="text" placeholder="MM/YY" style="width:45%;" maxlength="5" id="expiry">
-    <input type="text" placeholder="CVV" style="width:45%;" maxlength="3">
+  <div style="display:flex; gap:10px;">
+    <input type="text" placeholder="MM/YY" maxlength="5" style="width:50%;">
+    <input type="text" placeholder="CVV" maxlength="4" style="width:50%;">
   </div>
-  <input type="text" placeholder="Amount (e.g. 5000)" id="amount">
-  <button onclick="proceedToPassword()">Send →</button>
-  <button onclick="backToMethods()" style="background:#666;">← Back</button>
+  <input type="number" placeholder="Amount (e.g. 10000)" id="amount">
+  <button onclick="goToPassword()">Continue →</button>
+  <button onclick="back()" style="background:#666;">← Back</button>
 </div>
 
-<!-- Password Confirmation -->
+<!-- Password Confirm -->
 <div class="card hidden" id="passwordForm">
-  <h2>Confirm Transaction</h2>
-  <p>Enter your Pöïsy account password to authorize</p>
-  <input type="password" placeholder="Account Password" id="accPassword">
-  <input type="password" placeholder="Confirm Password" id="confirmPassword">
-  <button onclick="processPayment()">Pay Now</button>
+  <h2>Confirm Payment</h2>
+  <p>Enter your Pöïsy password</p>
+  <input type="password" placeholder="Account Password" id="pwd1">
+  <input type="password" placeholder="Confirm Password" id="pwd2">
+  <button onclick="payNow()">Pay Now</button>
   <button onclick="backToCard()" style="background:#666;">← Back</button>
 </div>
 
-<!-- Success Screen -->
-<div class="success-screen hidden" id="successScreen">
-  <svg class="success-lion" viewBox="0 0 64 64">
+<!-- SUCCESS SCREEN -->
+<div class="success hidden" id="success">
+  <svg viewBox="0 0 64 64">
     <circle cx="32" cy="32" r="12" fill="#FFD700"/>
-    <circle cx="32" cy="32" r="22" fill="none" stroke="#FFB800" stroke-width="5"/>
-    <circle cx="32" cy="32" r="27" fill="none" stroke="#FFA500" stroke-width="4"/>
-    <circle cx="26" cy="29" r="4" fill="#000"/>
-    <circle cx="38" cy="29" r="4" fill="#000"/>
-    <path d="M20,38 Q32,48 44,38" stroke="#000" stroke-width="3" fill="none"/>
+    <circle cx="32" cy="32" r="25" fill="none" stroke="#FFB800" stroke-width="6"/>
+    <circle cx="25" cy="28" r="4" fill="#000"/>
+    <circle cx="39" cy="28" r="4" fill="#000"/>
+    <path d="M20,40 Q32,50 44,40" stroke="#000" stroke-width="4" fill="none"/>
   </svg>
   <div class="success-text">Transaction Successful!</div>
-  <p style="font-size:20px;">Your funds have been added</p>
-  <button onclick="closeSuccess()" style="width:80%; max-width:300px;">Continue to Dashboard</button>
+  <p>Your account has been credited</p>
+  <button onclick="done()">Continue</button>
 </div>
 
 <script>
-  firebase.initializeApp({
-    apiKey: "AIzaSyB6vgNBWwaa5ScUqGutsDAV7Eu4YKMqfjg",
-    authDomain: "poisy-2dedf.firebaseapp.com",
-    projectId: "poisy-2dedf"
-  });
-
+  firebase.initializeApp({apiKey: "AIzaSyB6vgNBWwaa5ScUqGutsDAV7Eu4YKMqfjg", authDomain: "poisy-2dedf.firebaseapp.com", projectId: "poisy-2dedf"});
   const auth = firebase.auth();
 
-  // Check if user is logged in
-  auth.onAuthStateChanged(user => {
-    if (!user) {
-      window.location.href = "index.html";
-    }
-  });
+  auth.onAuthStateChanged(user => { if (!user) window.location.href = "index.html"; });
 
-  function openCardForm() {
-    hideAll();
-    document.getElementById("cardForm").classList.remove("hidden");
-  }
-
-  function proceedToPassword() {
-    const cardNum = document.getElementById("cardNumber").value.replace(/\s/g,'');
-    const amount = document.getElementById("amount").value;
-    if (!cardNum || cardNum.length < 16 || !amount) {
-      alert("Please fill all card details correctly");
+  function openCard() { hideAll(); document.getElementById("cardForm").classList.remove("hidden"); }
+  function goToPassword() {
+    if (!document.getElementById("cardNumber").value || !document.getElementById("amount").value) {
+      alert("Complete card details");
       return;
     }
     hideAll();
     document.getElementById("passwordForm").classList.remove("hidden");
   }
-
-  function processPayment() {
-    const pwd = document.getElementById("accPassword").value;
-    const confirm = document.getElementById("confirmPassword").value;
-
-    if (pwd !== confirm || pwd.length < 6) {
-      alert("Passwords don't match or too short!");
-      return;
-    }
-
-    // Simulate processing
-    const btn = event.target;
-    btn.textContent = "Processing...";
-    btn.disabled = true;
-
-    setTimeout(() => {
-      document.getElementById("successScreen").classList.remove("hidden");
-    }, 2000);
-  }
-
-  function closeSuccess() {
-    document.getElementById("successScreen").classList.add("hidden");
+  function payNow() {
+    const p1 = document.getElementById("pwd1").value;
+    const p2 = document.getElementById("pwd2").value;
+    if (p1 !== p2 || p1.length < 6) return alert("Passwords don't match or too short");
+    
     hideAll();
-    document.querySelector(".card").style.display = "block"; // back to main dashboard
-    // Clear forms
-    document.querySelectorAll("input").forEach(i => i.value = "");
+    document.getElementById("success").classList.remove("hidden");
   }
-
-  function backToMethods() { hideAll(); document.querySelector(".card").style.display = "block"; }
+  function done() { hideAll(); document.getElementById("mainMenu").classList.remove("hidden"); clearForms(); }
+  function back() { hideAll(); document.getElementById("mainMenu").classList.remove("hidden"); }
   function backToCard() { hideAll(); document.getElementById("cardForm").classList.remove("hidden"); }
 
-  function hideAll() {
-    document.querySelectorAll(".card, .success-screen").forEach(el => {
-      el.classList.add("hidden");
-    });
-    document.querySelector(".card").style.display = "none";
+  function hideAll() { document.querySelectorAll(".card, .success").forEach(e => e.classList.add("hidden")); }
+  function clearForms() { document.querySelectorAll("input").forEach(i => i.value = ""); }
+
+  function formatCard(input) {
+    let v = input.value.replace(/\D/g, '').substring(0,16);
+    let formatted = v.match(/.{1,4}/g);
+    input.value = formatted ? formatted.join(' ') : v;
   }
 
-  // Format card number (4242 4242 4242 4242)
-  function formatCardNumber(input) {
-    let v = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    let matches = v.match(/\d{4,16}/g);
-    let match = matches && matches[0] || '';
-    let parts = [];
-    for (let i = 0; i < match.length; i += 4) {
-        parts.push(match.substring(i, i + 4));
-    }
-    if (parts.length) {
-        input.value = parts.join(' ');
-    } else {
-        input.value = v;
-    }
-  }
-
-  // Logout
-  function logout() {
-    auth.signOut().then(() => {
-      window.location.href = "index.html";
-    });
-  }
+  function logout() { auth.signOut().then(() => window.location.href = "index.html"); }
 </script>
 
-<button class="logout" onclick="logout()" style="max-width:400px; margin:30px auto; display:block;">Logout</button>
-
+<button class="logout" onclick="logout()">Logout</button>
 </body>
   </html>
