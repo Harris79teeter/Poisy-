@@ -173,5 +173,96 @@ header h2 {
     const menu = document.getElementById("menu");
     menu.style.display = menu.style.display === "block" ? "none" : "block";
   }
+</script><script>
+// Move profile button to bottom
+const profileBtn = document.getElementById('profileButton');
+if (profileBtn) {
+  profileBtn.style.position = 'fixed';
+  profileBtn.style.bottom = '20px';
+  profileBtn.style.right = '20px';
+}
+
+// Enable profile menu actions
+const profileMenu = document.getElementById('profileMenu');
+if (profileBtn && profileMenu) {
+  profileBtn.addEventListener('click', () => {
+    profileMenu.style.display = profileMenu.style.display === 'block' ? 'none' : 'block';
+  });
+
+  const items = profileMenu.querySelectorAll('.menu-item');
+  items.forEach(item => {
+    item.addEventListener('click', () => {
+      alert(item.dataset.action + ' clicked');
+    });
+  });
+}
+</script><!-- Settings Popup --><div id="settingsPopup" class="popup hidden">
+  <div class="popup-content">
+    <h2>Settings</h2>
+    <p>Adjust your preferences here.</p>
+    <button onclick="closePopup('settingsPopup')">Close</button>
+  </div>
+</div><!-- Transaction History Popup --><div id="historyPopup" class="popup hidden">
+  <div class="popup-content">
+    <h2>Transaction History</h2>
+    <div id="historyList">No transactions yet...</div>
+    <button onclick="closePopup('historyPopup')">Close</button>
+  </div>
+</div><!-- Support Popup --><div id="supportPopup" class="popup hidden">
+  <div class="popup-content">
+    <h2>Customer Support</h2>
+    <p>Email: <b>poisymhan@gmail.com</b></p>
+    <textarea placeholder="Type your message here..." style="width:100%;height:80px;"></textarea>
+    <button>Send Message</button>
+    <button onclick="closePopup('supportPopup')">Close</button>
+  </div>
+</div><!-- User Info Popup --><div id="userInfoPopup" class="popup hidden">
+  <div class="popup-content">
+    <h2>User Info</h2>
+    <p id="userDetails">Loading...</p>
+    <button onclick="closePopup('userInfoPopup')">Close</button>
+  </div>
+</div><script>
+// Ensure profile button stays bottom-right
+const profileBtn = document.getElementById('profileButton');
+if (profileBtn) {
+  profileBtn.style.position = 'fixed';
+  profileBtn.style.bottom = '20px';
+  profileBtn.style.right = '20px';
+}
+
+// Profile menu toggle
+const profileMenu = document.getElementById('profileMenu');
+if (profileBtn && profileMenu) {
+  profileBtn.addEventListener('click', () => {
+    profileMenu.style.display = profileMenu.style.display === 'block' ? 'none' : 'block';
+  });
+}
+
+// Modal handling
+function openPopup(id) {
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function closePopup(id) {
+  document.getElementById(id).classList.add('hidden');
+}
+
+// Handle clicks for menu items
+document.querySelectorAll('.menu-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const action = item.dataset.action;
+
+    if (action === 'settings') openPopup('settingsPopup');
+    if (action === 'history') openPopup('historyPopup');
+    if (action === 'support') openPopup('supportPopup');
+    if (action === 'profile') {
+      document.getElementById('userDetails').innerHTML = 'User Signup Info Loaded...';
+      openPopup('userInfoPopup');
+    }
+
+    profileMenu.style.display = 'none';
+  });
+});
 </script></body>
   </html>
