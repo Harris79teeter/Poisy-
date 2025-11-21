@@ -23,18 +23,19 @@
     .form {
       padding: 40px 30px;
     }
+    h2 { margin-bottom: 20px; font-size: 24px; }
     input {
       width: 100%; padding: 18px; margin: 15px 0; border: 1px solid #ddd;
       border-radius: 14px; font-size: 17px;
     }
     .btn {
       width: 100%; padding: 18px; background: #000; color: white;
-      border: none; border-radius: 14px; font-size: 18px; font-weight: 600; margin-top: 20px;
+      border: none; border-radius: 14px; font-size: 18px; font-weight: 600; margin-top: 20px; cursor: pointer;
     }
     .switch {
       text-align: center; margin-top: 30px; font-size: 16px;
     }
-    .switch a { color: #00c4ff; font-weight: 600; }
+    .switch a { color: #00c4ff; font-weight: 600; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -45,15 +46,63 @@
     </div>
     
     <div class="form">
-      <h2 style="margin-bottom:20px;">Welcome Back</h2>
-      <input type="email" placeholder="Email or Phone Number" />
-      <input type="password" placeholder="Password" />
-      <button class="btn">Log In</button>
+      <h2 id="formTitle">Welcome Back</h2>
+      <input type="text" id="email" placeholder="Email or Phone Number" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button class="btn" id="authBtn">Log In</button>
       
       <div class="switch">
-        Don't have an account? <a href="#">Sign Up</a>
+        Don't have an account? <a id="switchLink">Sign Up</a>
       </div>
     </div>
   </div>
+
+  <script>
+    const formTitle = document.getElementById('formTitle');
+    const authBtn = document.getElementById('authBtn');
+    const switchLink = document.getElementById('switchLink');
+
+    // Toggle between Login and Sign Up
+    switchLink.addEventListener('click', () => {
+      if (authBtn.textContent === 'Log In') {
+        formTitle.textContent = 'Create Account';
+        authBtn.textContent = 'Sign Up';
+        switchLink.textContent = 'Log In instead';
+      } else {
+        formTitle.textContent = 'Welcome Back';
+        authBtn.textContent = 'Log In';
+        switchLink.textContent = 'Sign Up';
+      }
+    });
+
+    // On button click → Go to dashboard
+    authBtn.addEventListener('click', () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      // Fake success animation
+      authBtn.textContent = 'Please wait...';
+      authBtn.disabled = true;
+
+      setTimeout(() => {
+        // Save login state (so user stays logged in)
+        localStorage.setItem('poisy_logged_in', 'true');
+        localStorage.setItem('poisy_user', email);
+
+        // Redirect to dashboard
+        window.location.href = 'dashboard.html';
+      }, 1200);
+    });
+
+    // Optional: Press Enter to submit
+    document.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') authBtn.click();
+    });
+  </script>
 </body>
 </html>
