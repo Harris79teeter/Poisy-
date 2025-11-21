@@ -11,6 +11,26 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 </head>
 <body>
+    <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+<script>
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyB6vgNBWwaa5ScUqGutsDAV7Eu4YKMqfjg",
+    authDomain: "poisy-2dedf.firebaseapp.com",
+    projectId: "poisy-2dedf",
+    storageBucket: "poisy-2dedf.appspot.com",
+    messagingSenderId: "310724767012",
+    appId: "1:310724767012:web:8a6f3e09510265b24917b1",
+    measurementId: "G-KDB8PXKGWJ"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+</script>
     <nav>
         <h2>Pöïsy</h2>
         <a href="#" onclick="logout()">Logout</a>
