@@ -1,165 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pöisy – Send Money Anywhere</title>
-  <style>
-    :root { --blue: #00c4ff; --darkblue: #0066cc; --yellow: #ffd700; }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, var(--blue), var(--darkblue));
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .container { text-align: center; max-width: 420px; width: 100%; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pöïsy - Welcome</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 
-    /* Screen 1 – Welcome + Terms */
-    #welcomeScreen .logo { font-size: 82px; font-weight: 900; letter-spacing: -4px; }
-    #welcomeScreen .tagline { font-size: 46px; font-weight: 800; line-height: 1.1; margin: 20px 0; }
-    #welcomeScreen .subtitle { font-size: 18px; opacity: 0.9; line-height: 1.6; margin-bottom: 40px; }
-
-    .terms-box {
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(12px);
-      padding: 22px;
-      border-radius: 20px;
-      margin: 40px 0;
-      font-size: 14.5px;
-    }
-    .checkbox-label {
-      display: flex; align-items: flex-start; gap: 14px; cursor: pointer;
-    }
-    input[type="checkbox"] { width: 26px; height: 26px; accent-color: var(--yellow); flex-shrink: 0; }
-
-    .btn {
-      background: rgba(0,0,0,0.9); color: white; border: none; padding: 18px 50px;
-      border-radius: 50px; font-size: 18px; font-weight: 600; cursor: pointer;
-      opacity: 0; transform: translateY(20px); transition: all 0.5s;
-    }
-    .btn.visible { opacity: 1; transform: translateY(0); }
-
-    /* Screen 2 – Login / Sign Up */
-    .auth-card {
-      background: white; color: #222; border-radius: 24px; overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.4); margin-top: 20px;
-    }
-    .auth-header {
-      background: linear-gradient(135deg, var(--blue), var(--darkblue));
-      padding: 50px 30px; text-align: center; color: white;
-    }
-    .auth-header .logo { font-size: 60px; font-weight: 900; letter-spacing: -3px; }
-    .form { padding: 40px 30px; }
-    input {
-      width: 100%; padding: 18px; margin: 15px 0; border: 1px solid #ddd;
-      border-radius: 14px; font-size: 17px;
-    }
-    .auth-btn {
-      width: 100%; padding: 18px; background: #000; color: white;
-      border: none; border-radius: 14px; font-size: 18px; font-weight: 600; cursor: pointer;
-    }
-    .switch { text-align: center; margin-top: 25px; }
-    .switch a { color: var(--blue); font-weight: 600; cursor: pointer; }
-  </style>
+<style>
+  body {font-family: Arial; margin:0; background:#1E90FF; color:#fff; text-align:center; min-height:100vh; display:flex; flex-direction:column; justify-content:center;}
+  .container {max-width:400px; margin:20px auto; background:rgba(0,0,0,0.25); padding:30px; border-radius:15px;}
+  input {width:90%; padding:14px; margin:12px 0; border-radius:8px; border:none; font-size:16px;}
+  button {width:95%; padding:15px; background:#FFD700; color:#000; font-weight:bold; border:none; border-radius:10px; cursor:pointer; font-size:18px;}
+  button:hover {background:#FFC300;}
+  button:disabled {background:#999; cursor:not-allowed;}
+  .toggle-link {color:#FFD700; cursor:pointer; font-weight:bold; text-decoration:underline;}
+  .badge svg {width:160px; height:160px;}
+  .welcome-text {font-size:32px; color:#FFD700; text-shadow:2px 2px 10px #000; animation:glow 3s infinite alternate;}
+  @keyframes glow {0%{text-shadow:2px 2px 10px #000;} 100%{text-shadow:0 0 30px #FFF, 0 0 50px #FFD700;}}
+  .hidden {display:none;}
+</style>
 </head>
 <body>
 
-  <div class="container">
+<div style="margin-bottom:20px;">
+  <svg viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="12" fill="#FFD700" stroke="#FFA500" stroke-width="2"/>
+    <circle cx="32" cy="32" r="22" fill="none" stroke="#FFB800" stroke-width="4"/>
+    <circle cx="32" cy="32" r="26" fill="none" stroke="#FFA500" stroke-width="3"/>
+    <circle cx="27" cy="30" r="3" fill="#000"/>
+    <circle cx="37" cy="30" r="3" fill="#000"/>
+    <polygon points="30,36 34,36 32,41" fill="#000"/>
+    <path d="M26,43 Q32,48 38,43" stroke="#000" stroke-width="2" fill="none"/>
+  </svg>
+  <div class="welcome-text">Welcome to Pöïsy</div>
+</div>
 
-    <!-- SCREEN 1: Welcome + Terms -->
-    <div id="welcomeScreen">
-      <h1 class="logo">Pöisy</h1>
-      <h2 class="tagline">Send Real<br>Cash<br>Anywhere</h2>
-      <p class="subtitle">Fast, low-fee transfers to 80+ countries.<br>Bank, cash pickup, or mobile wallet.</p>
+<!-- Sign Up -->
+<div class="container" id="signupForm">
+  <h1>Create Account</h1>
+  <input type="email" id="signupEmail" placeholder="Email" required>
+  <input type="password" id="signupPassword" placeholder="Password (6+ characters)" required>
+  <button id="signupBtn" onclick="signUp()">Sign Up</button>
+  <div class="toggle-link" onclick="showLogin()">Already have an account? <strong>Login</strong></div>
+</div>
 
-      <div class="terms-box">
-        <label class="checkbox-label">
-          <input type="checkbox" id="agreeTerms"/>
-          <span>I agree to Pöisy’s <strong>Terms of Service</strong>, <strong>Privacy Policy</strong>, and confirm I am 18+</span>
-        </label>
-      </div>
+<!-- Login -->
+<div class="container hidden" id="loginForm">
+  <h1>Login</h1>
+  <input type="email" id="loginEmail" placeholder="Email" required>
+  <input type="password" id="loginPassword" placeholder="Password" required>
+  <button id="loginBtn" onclick="login()">Login</button>
+  <div class="toggle-link" onclick="showSignup()">Don't have an account? <strong>Sign Up</strong></div>
+</div>
 
-      <button id="getStartedBtn" class="btn">Get Started</button>
-    </div>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyB6vgNBWwaa5ScUqGutsDAV7Eu4YKMqfjg",
+    authDomain: "poisy-2dedf.firebaseapp.com",
+    projectId: "poisy-2dedf",
+    storageBucket: "poisy-2dedf.appspot.com",
+    messagingSenderId: "310724767012",
+    appId: "1:310724767012:web:8a6f3e09510265b24917b1"
+  };
 
-    <!-- SCREEN 2: Login / Sign Up -->
-    <div id="authScreen" style="display:none;">
-      <div class="auth-card">
-        <div class="auth-header">
-          <div class="logo">Pöisy</div>
-        </div>
-        <div class="form">
-          <h2 id="authTitle">Welcome Back</h2>
-          <input type="text" id="email" placeholder="Email or Phone Number" required />
-          <input type="password" id="password" placeholder="Password" required />
-          <button id="authBtn" class="auth-btn">Log In</button>
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
 
-          <div class="switch">
-            Don't have an account? <a id="switchLink">Sign Up</a>
-          </div>
-        </div>
-      </div>
-    </div>
+  function showSignup() {
+    document.getElementById('signupForm').classList.remove('hidden');
+    document.getElementById('loginForm').classList.add('hidden');
+  }
 
-  </div>
+  function showLogin() {
+    document.getElementById('loginForm').classList.remove('hidden');
+    document.getElementById('signupForm').classList.add('hidden');
+  }
 
-  <script>
-    const agree = document.getElementById('agreeTerms');
-    const getStarted = document.getElementById('getStartedBtn');
-    const welcomeScreen = document.getElementById('welcomeScreen');
-    const authScreen = document.getElementById('authScreen');
-    const authTitle = document.getElementById('authTitle');
-    const authBtn = document.getElementById('authBtn');
-    const switchLink = document.getElementById('switchLink');
+  function signUp() {
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+    const btn = document.getElementById('signupBtn');
 
-    // Show Get Started button only when terms accepted
-    agree.addEventListener('change', () => {
-      getStarted.classList.toggle('visible', agree.checked);
-    });
+    if (!email || !password) return alert("Fill all fields");
+    if (password.length < 6) return alert("Password too short");
 
-    // Go to Login/Signup screen
-    getStarted.addEventListener('click', () => {
-      welcomeScreen.style.display = 'none';
-      authScreen.style.display = 'block';
-    });
+    btn.disabled = true;
+    btn.textContent = "Creating...";
 
-    // Toggle between Login & Sign Up
-    switchLink.addEventListener('click', () => {
-      if (authBtn.textContent === 'Log In') {
-        authTitle.textContent = 'Create Account';
-        authBtn.textContent = 'Sign Up';
-        switchLink.textContent = 'Log In instead';
-      } else {
-        authTitle.textContent = 'Welcome Back';
-        authBtn.textContent = 'Log In';
-        switchLink.textContent = 'Sign Up';
-      }
-    });
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        alert("Account created successfully!");
+        window.location.href = "dashboard.html";
+      })
+      .catch(error => {
+        if (error.code === 'auth/email-already-in-use') {
+          alert("This email is already registered. Please login instead.");
+          showLogin();
+        } else {
+          alert("Error: " + error.message);
+        }
+        btn.disabled = false;
+        btn.textContent = "Sign Up";
+      });
+  }
 
-    // Final Login/Signup → Go to Dashboard
-    authBtn.addEventListener('click', () => {
-      const email = document.getElementById('email').value;
-      const pass = document.getElementById('password').value;
+  function login() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const btn = document.getElementById('loginBtn');
 
-      if (!email || !pass) {
-        alert('Please fill in all fields');
-        return;
-      }
+    if (!email || !password) return alert("Fill all fields");
 
-      authBtn.textContent = 'Please wait...';
-      authBtn.disabled = true;
+    btn.disabled = true;
+    btn.textContent = "Logging in...";
 
-      setTimeout(() => {
-        localStorage.setItem('poisy_logged_in', 'true');
-        localStorage.setItem('poisy_user', email);
-        window.location.href = 'dashboard.html';
-      }, 1200);
-    });
-  </script>
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        window.location.href = "dashboard.html";
+      })
+      .catch(error => {
+        alert("Login failed: " + error.message);
+        btn.disabled = false;
+        btn.textContent = "Login";
+      });
+  }
+
+  // Auto redirect if already logged in
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      window.location.href = "dashboard.html";
+    }
+  });
+</script>
 </body>
 </html>
