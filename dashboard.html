@@ -1,268 +1,321 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pöïsy Dashboard</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      color: #222;
-    }header {
-  background: linear-gradient(90deg, red, green);
-  padding: 15px;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pöïsy Dashboard</title>
 
-header h2 {
-  margin: 0;
-  font-size: 20px;
-}
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 
-.back-btn {
-  background: white;
-  color: black;
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-}
+<!-- Paystack SDK -->
+<script src="https://js.paystack.co/v1/inline.js"></script>
 
-.container {
-  padding: 20px;
-}
-
-.section-title {
-  font-size: 18px;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.input-box {
-  margin-bottom: 15px;
-}
-
-.input-box label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.input-box input, select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 15px;
-}
-
-.pay-btn {
-  width: 100%;
-  padding: 12px;
-  background: green;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 17px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-/* PROFILE DROPDOWN */
-.profile-area {
-  position: relative;
-  display: inline-block;
-}
-
-.profile-icon {
-  width: 40px;
-  height: 40px;
-  background: white;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 2px solid #ddd;
-}
-
-.dropdown {
-  position: absolute;
-  top: 50px;
-  right: 0;
-  background: white;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  padding: 10px;
-  border-radius: 8px;
-  width: 180px;
-  display: none;
-}
-
-.dropdown a {
-  display: block;
-  padding: 8px;
-  text-decoration: none;
-  color: black;
-  border-bottom: 1px solid #eee;
-  font-size: 14px;
-}
-
-.dropdown a:last-child {
-  border-bottom: none;
-}
-
-.history-section {
-  margin-top: 30px;
-  padding: 15px;
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 0 6px rgba(0,0,0,0.1);
-}
-
-.history-item {
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.history-item:last-child {
-  border-bottom: none;
-}
-
-  </style>
-</head>
-<body><header>
-  <div class="back-btn">← Back</div>
-  <h2>Pöïsy Dashboard</h2>  <div class="profile-area">
-    <div class="profile-icon" onclick="toggleMenu()"></div>
-    <div class="dropdown" id="menu">
-      <a href="#">Customer Support</a>
-      <a href="#">Settings</a>
-      <a href="#history">Transaction History</a>
-      <a href="#">Logout</a>
-    </div>
-  </div>
-</header><div class="container">  <div class="section-title">Send Money</div>  <div class="input-box">
-    <label>Choose Receiver Type</label>
-    <select>
-      <option>Mobile Money User</option>
-      <option>Bank User</option>
-    </select>
-  </div>  <div class="input-box">
-    <label>Receiver Account Number</label>
-    <input type="text" placeholder="Enter receiver number" />
-  </div>  <div class="input-box">
-    <label>Amount</label>
-    <input type="number" placeholder="Enter amount" />
-  </div>  <div class="input-box">
-    <label>Your Sending Account</label>
-    <input type="text" placeholder="Enter your account number" />
-  </div>  <div class="input-box">
-    <label>Your Account Password</label>
-    <input type="password" placeholder="Enter password" />
-  </div><button class="pay-btn">Continue to Payment</button>
-
-  <!-- TRANSACTION HISTORY -->  <div id="history" class="history-section">
-    <h3>Transaction History</h3><div class="history-item">No transactions yet.</div>
-
-<div class="back-btn" style="margin-top:15px; text-align:center; background:#ddd;">← Back</div>
-
-  </div></div><script>
-  function toggleMenu() {
-    const menu = document.getElementById("menu");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ff4d4d; /* Plain Red background */
+    color: #fff;
+    overflow-x: hidden;
   }
-</script><script>
-// Move profile button to bottom
-const profileBtn = document.getElementById('profileButton');
-if (profileBtn) {
-  profileBtn.style.position = 'fixed';
-  profileBtn.style.bottom = '20px';
-  profileBtn.style.right = '20px';
-}
 
-// Enable profile menu actions
-const profileMenu = document.getElementById('profileMenu');
-if (profileBtn && profileMenu) {
-  profileBtn.addEventListener('click', () => {
-    profileMenu.style.display = profileMenu.style.display === 'block' ? 'none' : 'block';
-  });
+  nav {
+    background-color: #28a745; /* Bright Green */
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  nav h2, nav a {
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  nav a:hover { text-decoration: underline; }
 
-  const items = profileMenu.querySelectorAll('.menu-item');
-  items.forEach(item => {
-    item.addEventListener('click', () => {
-      alert(item.dataset.action + ' clicked');
-    });
-  });
-}
-</script><!-- Settings Popup --><div id="settingsPopup" class="popup hidden">
-  <div class="popup-content">
-    <h2>Settings</h2>
-    <p>Adjust your preferences here.</p>
-    <button onclick="closePopup('settingsPopup')">Close</button>
+  section {
+    position: absolute;
+    top: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    background: rgba(0,0,0,0.2);
+    padding: 25px;
+    border-radius: 15px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.5s ease;
+  }
+  section.active { display: flex; }
+
+  .step-progress {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+  }
+  .step-progress div {
+    width: 40px;
+    height: 10px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 5px;
+  }
+  .step-progress div.active { background: #28a745; }
+
+  input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: none;
+  }
+
+  button {
+    width: 95%;
+    padding: 12px;
+    margin: 10px 0;
+    background-color: #FFD700; /* Gold buttons */
+    color: #000;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  button:hover { background-color: #FFC300; }
+
+  .back-btn {
+    align-self: flex-start;
+    cursor: pointer;
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #fff;
+  }
+
+  .transaction-entry {
+    background: rgba(0,0,0,0.2);
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 10px;
+  }
+
+  footer {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #28a745; /* Green footer */
+    color: #fff;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <h2>Pöïsy</h2>
+  <a href="#" onclick="logout()">Logout</a>
+</nav>
+
+<div class="step-progress">
+  <div id="prog1" class="active"></div>
+  <div id="prog2"></div>
+  <div id="prog3"></div>
+  <div id="prog4"></div>
+  <div id="prog5"></div>
+  <div id="prog6"></div>
+</div>
+
+<!-- Step 1: Select recipient -->
+<section id="step1" class="active">
+  <h1>Send Money</h1>
+  <p>Select recipient type</p>
+  <button onclick="nextStep('momo')">Mobile Money</button>
+  <button onclick="nextStep('bank')">Bank Account</button>
+</section>
+
+<!-- Step 2: Recipient details -->
+<section id="step2">
+  <span class="back-btn" onclick="prevStep('step1')">&larr; Back</span>
+  <h2>Recipient Details</h2>
+  <input type="text" id="recipientName" placeholder="Recipient Name" required><br>
+  <div id="momoFields">
+    <input type="text" id="recipientPhone" placeholder="Phone Number" required><br>
   </div>
-</div><!-- Transaction History Popup --><div id="historyPopup" class="popup hidden">
-  <div class="popup-content">
-    <h2>Transaction History</h2>
-    <div id="historyList">No transactions yet...</div>
-    <button onclick="closePopup('historyPopup')">Close</button>
+  <div id="bankFields">
+    <input type="text" id="bankName" placeholder="Bank Name"><br>
+    <input type="text" id="accountNumber" placeholder="Account Number"><br>
   </div>
-</div><!-- Support Popup --><div id="supportPopup" class="popup hidden">
-  <div class="popup-content">
-    <h2>Customer Support</h2>
-    <p>Email: <b>poisymhan@gmail.com</b></p>
-    <textarea placeholder="Type your message here..." style="width:100%;height:80px;"></textarea>
-    <button>Send Message</button>
-    <button onclick="closePopup('supportPopup')">Close</button>
-  </div>
-</div><!-- User Info Popup --><div id="userInfoPopup" class="popup hidden">
-  <div class="popup-content">
-    <h2>User Info</h2>
-    <p id="userDetails">Loading...</p>
-    <button onclick="closePopup('userInfoPopup')">Close</button>
-  </div>
-</div><script>
-// Ensure profile button stays bottom-right
-const profileBtn = document.getElementById('profileButton');
-if (profileBtn) {
-  profileBtn.style.position = 'fixed';
-  profileBtn.style.bottom = '20px';
-  profileBtn.style.right = '20px';
-}
+  <input type="number" id="amount" placeholder="Amount (GHS)" required><br>
+  <button onclick="nextStep2()">Continue</button>
+</section>
 
-// Profile menu toggle
-const profileMenu = document.getElementById('profileMenu');
-if (profileBtn && profileMenu) {
-  profileBtn.addEventListener('click', () => {
-    profileMenu.style.display = profileMenu.style.display === 'block' ? 'none' : 'block';
-  });
-}
+<!-- Step 3: Payment method -->
+<section id="step3">
+  <span class="back-btn" onclick="prevStep('step2')">&larr; Back</span>
+  <h2>Choose Payment Method</h2>
+  <button onclick="nextStep3('card')">Pay with Card</button>
+  <button onclick="nextStep3('mobilemoneyghana')">Pay with Mobile Money (Ghana)</button>
+  <button onclick="nextStep3('ussd')">Pay with USSD</button>
+</section>
 
-// Modal handling
-function openPopup(id) {
-  document.getElementById(id).classList.remove('hidden');
-}
+<!-- Step 4: Sending account number -->
+<section id="step4">
+  <span class="back-btn" onclick="prevStep('step3')">&larr; Back</span>
+  <h2>Enter Sending Account Number</h2>
+  <input type="text" id="senderAccount" placeholder="Your Account Number" required><br>
+  <button onclick="nextStep4()">Continue</button>
+</section>
 
-function closePopup(id) {
-  document.getElementById(id).classList.add('hidden');
-}
+<!-- Step 5: Sending account password -->
+<section id="step5">
+  <span class="back-btn" onclick="prevStep('step4')">&larr; Back</span>
+  <h2>Enter Sending Account Password</h2>
+  <input type="password" id="senderPassword" placeholder="Password" required><br>
+  <button onclick="nextStep5()">Continue</button>
+</section>
 
-// Handle clicks for menu items
-document.querySelectorAll('.menu-item').forEach(item => {
-  item.addEventListener('click', () => {
-    const action = item.dataset.action;
+<!-- Step 6: Confirm password -->
+<section id="step6">
+  <span class="back-btn" onclick="prevStep('step5')">&larr; Back</span>
+  <h2>Confirm Password</h2>
+  <input type="password" id="confirmPassword" placeholder="Confirm Password" required><br>
+  <button onclick="processPayment()">Send Money</button>
+</section>
 
-    if (action === 'settings') openPopup('settingsPopup');
-    if (action === 'history') openPopup('historyPopup');
-    if (action === 'support') openPopup('supportPopup');
-    if (action === 'profile') {
-      document.getElementById('userDetails').innerHTML = 'User Signup Info Loaded...';
-      openPopup('userInfoPopup');
-    }
+<!-- Transaction History at the End -->
+<section id="transactionHistory">
+  <h2>Transaction History</h2>
+  <div id="historyList"></div>
+  <button class="back-btn" onclick="goBackToStart()">&larr; Back to Start</button>
+</section>
 
-    profileMenu.style.display = 'none';
-  });
+<footer>
+  <p>Customer support: <a href="mailto:poisymhan@gmail.com">poisymhan@gmail.com</a></p>
+</footer>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyB6vgNBWwaa5ScUqGutsDAV7Eu4YKMqfjg",
+  authDomain: "poisy-2dedf.firebaseapp.com",
+  projectId: "poisy-2dedf",
+  storageBucket: "poisy-2dedf.appspot.com",
+  messagingSenderId: "310724767012",
+  appId: "1:310724767012:web:8a6f3e09510265b24917b1",
+  measurementId: "G-KDB8PXKGWJ"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+auth.onAuthStateChanged(user => {
+  if(!user){ alert("Login first"); window.location.href = "index.html";}
 });
-</script></body>
-  </html>
+function logout(){ auth.signOut().then(()=>window.location.href="index.html"); }
+
+let recipientType = '', paymentChannel = '';
+let steps = ['step1','step2','step3','step4','step5','step6'];
+let currentStep = 0;
+
+function updateProgress(){
+  steps.forEach((s,i)=>{
+    document.getElementById('prog'+(i+1)).classList.remove('active');
+  });
+  document.getElementById('prog'+(currentStep+1)).classList.add('active');
+}
+
+function showStep(stepId){
+  steps.forEach(s => document.getElementById(s).classList.remove('active'));
+  document.getElementById(stepId).classList.add('active');
+}
+
+function nextStep(type){
+  recipientType = type;
+  document.getElementById('momoFields').style.display = (type==='momo')?'block':'none';
+  document.getElementById('bankFields').style.display = (type==='bank')?'block':'none';
+  currentStep=1; showStep('step2'); updateProgress();
+}
+
+function nextStep2(){
+  const name=document.getElementById('recipientName').value;
+  const phone=document.getElementById('recipientPhone').value;
+  const bank=document.getElementById('bankName').value;
+  const account=document.getElementById('accountNumber').value;
+  const amount=document.getElementById('amount').value;
+  if(!name||!amount||(recipientType==='momo'&&!phone)||(recipientType==='bank'&&(!bank||!account))){ alert("Fill all fields"); return;}
+  currentStep=2; showStep('step3'); updateProgress();
+}
+
+function nextStep3(channel){ paymentChannel=channel; currentStep=3; showStep('step4'); updateProgress(); }
+function nextStep4(){ if(!document.getElementById('senderAccount').value){ alert("Enter sending account"); return;} currentStep=4; showStep('step5'); updateProgress();}
+function nextStep5(){ if(!document.getElementById('senderPassword').value){ alert("Enter password"); return;} currentStep=5; showStep('step6'); updateProgress(); }
+
+function prevStep(stepId){
+  currentStep = steps.indexOf(stepId);
+  showStep(stepId);
+  updateProgress();
+}
+
+function processPayment(){
+  const password=document.getElementById('senderPassword').value;
+  const confirm=document.getElementById('confirmPassword').value;
+  if(password!==confirm){ alert("Passwords do not match"); return; }
+  alert("Payment would proceed to Paystack here!");
+  const tx={name:document.getElementById('recipientName').value,
+            phone:document.getElementById('recipientPhone').value||'',
+            bank:document.getElementById('bankName').value||'',
+            account:document.getElementById('accountNumber').value||'',
+            amount:document.getElementById('amount').value,
+            ref:"TX_"+Math.floor(Math.random()*1000000)};
+  saveTransaction(tx);
+  resetForm();
+  // Show transaction history
+  showTransactionHistory();
+}
+
+function saveTransaction(tx){
+  let history=JSON.parse(localStorage.getItem('transactions'))||[];
+  history.unshift(tx);
+  localStorage.setItem('transactions',JSON.stringify(history));
+}
+
+function displayHistory(){
+  const historyList=document.getElementById('historyList');
+  let history=JSON.parse(localStorage.getItem('transactions'))||[];
+  historyList.innerHTML='';
+  history.forEach(tx=>{
+    const div=document.createElement('div');
+    div.className='transaction-entry';
+    div.innerHTML=`<strong>Recipient:</strong> ${tx.name} ${tx.phone||''} ${tx.bank||''} ${tx.account||''}<br>
+                   <strong>Amount:</strong> GHS ${tx.amount}<br>
+                   <strong>Reference:</strong> ${tx.ref}`;
+    historyList.appendChild(div);
+  });
+}
+
+function resetForm(){
+  ['recipientName','recipientPhone','bankName','accountNumber','amount','senderAccount','senderPassword','confirmPassword'].forEach(id=>document.getElementById(id).value='');
+  currentStep=0; showStep('step1'); updateProgress();
+}
+
+function showTransactionHistory(){
+  displayHistory();
+  // Hide all steps
+  steps.forEach(s => document.getElementById(s).classList.remove('active'));
+  document.getElementById('transactionHistory').style.display='flex';
+}
+
+function goBackToStart(){
+  document.getElementById('transactionHistory').style.display='none';
+  currentStep = 0; showStep('step1'); updateProgress();
+}
+
+window.onload=displayHistory;
+</script>
+</body>
+                    </html>
