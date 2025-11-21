@@ -109,7 +109,7 @@
   }
 
   footer {
-    margin-top: 300px;
+    margin-top: 20px;
     padding: 20px;
     background-color: #28a745; /* Green footer */
     color: #fff;
@@ -133,6 +133,7 @@
   <div id="prog6"></div>
 </div>
 
+<!-- Step 1: Select recipient -->
 <section id="step1" class="active">
   <h1>Send Money</h1>
   <p>Select recipient type</p>
@@ -140,6 +141,7 @@
   <button onclick="nextStep('bank')">Bank Account</button>
 </section>
 
+<!-- Step 2: Recipient details -->
 <section id="step2">
   <span class="back-btn" onclick="prevStep('step1')">&larr; Back</span>
   <h2>Recipient Details</h2>
@@ -155,6 +157,7 @@
   <button onclick="nextStep2()">Continue</button>
 </section>
 
+<!-- Step 3: Payment method -->
 <section id="step3">
   <span class="back-btn" onclick="prevStep('step2')">&larr; Back</span>
   <h2>Choose Payment Method</h2>
@@ -163,6 +166,7 @@
   <button onclick="nextStep3('ussd')">Pay with USSD</button>
 </section>
 
+<!-- Step 4: Sending account number -->
 <section id="step4">
   <span class="back-btn" onclick="prevStep('step3')">&larr; Back</span>
   <h2>Enter Sending Account Number</h2>
@@ -170,6 +174,7 @@
   <button onclick="nextStep4()">Continue</button>
 </section>
 
+<!-- Step 5: Sending account password -->
 <section id="step5">
   <span class="back-btn" onclick="prevStep('step4')">&larr; Back</span>
   <h2>Enter Sending Account Password</h2>
@@ -177,6 +182,7 @@
   <button onclick="nextStep5()">Continue</button>
 </section>
 
+<!-- Step 6: Confirm password -->
 <section id="step6">
   <span class="back-btn" onclick="prevStep('step5')">&larr; Back</span>
   <h2>Confirm Password</h2>
@@ -184,9 +190,11 @@
   <button onclick="processPayment()">Send Money</button>
 </section>
 
+<!-- Transaction History at the End -->
 <section id="transactionHistory">
   <h2>Transaction History</h2>
   <div id="historyList"></div>
+  <button class="back-btn" onclick="goBackToStart()">&larr; Back to Start</button>
 </section>
 
 <footer>
@@ -266,13 +274,14 @@ function processPayment(){
             ref:"TX_"+Math.floor(Math.random()*1000000)};
   saveTransaction(tx);
   resetForm();
+  // Show transaction history
+  showTransactionHistory();
 }
 
 function saveTransaction(tx){
   let history=JSON.parse(localStorage.getItem('transactions'))||[];
   history.unshift(tx);
   localStorage.setItem('transactions',JSON.stringify(history));
-  displayHistory();
 }
 
 function displayHistory(){
@@ -287,7 +296,6 @@ function displayHistory(){
                    <strong>Reference:</strong> ${tx.ref}`;
     historyList.appendChild(div);
   });
-  if(history.length>0) document.getElementById('transactionHistory').style.display='block';
 }
 
 function resetForm(){
@@ -295,7 +303,19 @@ function resetForm(){
   currentStep=0; showStep('step1'); updateProgress();
 }
 
+function showTransactionHistory(){
+  displayHistory();
+  // Hide all steps
+  steps.forEach(s => document.getElementById(s).classList.remove('active'));
+  document.getElementById('transactionHistory').style.display='flex';
+}
+
+function goBackToStart(){
+  document.getElementById('transactionHistory').style.display='none';
+  currentStep = 0; showStep('step1'); updateProgress();
+}
+
 window.onload=displayHistory;
 </script>
 </body>
-    </html>
+  </html>
