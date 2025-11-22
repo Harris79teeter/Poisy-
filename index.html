@@ -1,38 +1,32 @@
-<!DOCTYPE blaHTML>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pöïsy Bank| Sign In</title>
+<title>Poisy Bank– Sign In</title>
 <style>
-  body{margin:0;background:#f5f5f5;font-family:Helvetica,Arial,sans-serif;}
-  .header{background:#c00;color:white;padding:20px;text-align:center;}
-  .logo{font-size:28px;font-weight:bold;}
-  .container{max-width:420px;margin:40px auto;background:white;padding:40px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.15);}
-  input{width:100%;padding:16px;margin:12px 0;border:1px solid #ddd;border-radius:8px;font-size:16px;}
-  .btn{background:#c00;color:white;padding:16px;border:none;border-radius:8px;font-size:18px;font-weight:bold;cursor:pointer;}
-  .btn:hover{background:#a00;}
-  .links{text-align:center;margin-top:20px;}
-  .links a{color:#0066cc;text-decoration:none;font-size:14px;}
-  .secure{font-size:12px;color:#666;text-align:center;margin-top:30px;}
+  body{margin:0;background:#ffb400;font-family:-apple-system,Arial,sans-serif;color:#000;height:100vh;display:flex;align-items:center;justify-content:center;}
+  .card{background:white;width:90%;max-width:400px;padding:40px;border-radius:25px;box-shadow:0 15px 40px rgba(0,0,0,0.3);text-align:center;}
+  .logo{font-size:60px;margin-bottom:20px;}
+  h1{font-size:26px;margin:20px 0 10px;}
+  input{width:100%;padding:18px;margin:12px 0;border:2px solid #ddd;border-radius:12px;font-size:17px;}
+  .btn{background:#000;color:#ffb400;padding:18px;border:none;border-radius:12px;font-size:18px;font-weight:bold;}
+  .links{margin-top:25px;}
+  .links a{color:#000;text-decoration:underline;font-size:14px;}
 </style>
 </head>
 <body>
-  <div class="header"><div class="logo">Pöïsy Bank</div></div>
-  <div class="container">
-    <h2 style="text-align:center;color:#333;">Sign In</h2>
+  <div class="card">
+    <div class="logo">Pöïsy</div>
+    <h1>Welcome Back</h1>
+    <p>Enter your phone number and PIN</p>
     <form>
-      <input type="text" placeholder="Online ID" required>
-      <input type="password" placeholder="Passcode" required>
-      <label><input type="checkbox"> Save Online ID</label><br><br>
+      <input type="tel" placeholder="024 123 4567" value="024" required>
+      <input type="password" placeholder="Enter PIN" maxlength="4" required>
       <button type="submit" class="btn">Sign In</button>
     </form>
     <div class="links">
-      <a href="#">Forgot ID/Passcode?</a> • <a href="#">Enroll now</a><br><br>
-      <a href="#">Security Center</a> • <a href="#">Site Map</a>
-    </div>
-    <div class="secure">
-      Secured by Bank of Poisy (Theophilus)• SSL Encrypted
+      <a href="#">Forgot PIN?</a> • <a href="#">Register</a>
     </div>
   </div>
 </body>
